@@ -73,6 +73,8 @@
 
 @php
 $getSettingHeader = App\Models\SystemSettingModel::getSingle();
+$headerUser = Auth::user();
+$headerUserImage = !empty($headerUser) ? $headerUser->getImage() : '';
 @endphp
 
 <!-- Navbar -->
@@ -155,14 +157,14 @@ $getSettingHeader = App\Models\SystemSettingModel::getSingle();
 
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        @if(!empty(Auth::user()->getImage()))
-        <img src="{{ Auth::user()->getImage() }}" class="img-circle elevation-2" alt="User Image" style="height: 60px; width: 60px; border-radius: 20%">
+        @if(!empty($headerUserImage))
+        <img src="{{ $headerUserImage }}" class="img-circle elevation-2" alt="User Image" style="height: 60px; width: 60px; border-radius: 20%">
         @else
         <img src="{{ asset('upload/user/default_profile.jpg') }}" class="img-circle elevation-2" alt="Default User Image" style="height: 60px; width: 60px; border-radius: 50%">
         @endif
       </div>
       <div class="info">
-        <a class="d-block user-name">{{ Auth::user()->name }}</a>
+        <a class="d-block user-name">{{ $headerUser->name ?? 'Admin User' }}</a>
       </div>
     </div>
 

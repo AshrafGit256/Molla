@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\HomeSetting; // Adjust the model namespace if necessary
+use App\Models\HomeSettingModel;
 
 class HomeSettingSeeder extends Seeder
 {
     public function run()
     {
-        HomeSetting::create([
+        HomeSettingModel::updateOrCreate(['id' => 1], [
             'trendy_product_title' => 'Latest Trends',
             'shop_by_category_title' => 'Shop by Categories',
             'recent_arrival_title' => 'Recent Arrivals',

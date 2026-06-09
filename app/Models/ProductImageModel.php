@@ -18,7 +18,7 @@ class ProductImageModel extends Model
 
     public function get_image()
     {
-        if(!empty($this->image_name) && file_exists('upload/product/' .$this->image_name))
+        if(!empty($this->image_name) && file_exists(public_path('upload/product/' .$this->image_name)))
         {
             return url('upload/product/' .$this->image_name);
         }
