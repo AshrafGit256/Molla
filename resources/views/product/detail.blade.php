@@ -121,7 +121,7 @@
                             </div><!-- End .rating-container -->
 
                             <div class="product-price">
-                                $<span id="getTotalPrice">{{ number_format($getProduct->price, 2) }}</span>
+                                <span id="getTotalPrice">{{ App\Support\Money::format($getProduct->price) }}</span>
                             </div><!-- End .product-price -->
 
                             <div class="product-content">
@@ -168,10 +168,10 @@
                                         <select name="size_id" id="size" required class="form-control getSizePrice">
                                             <option data-price="0" value="">Select a Size</option>
                                             @foreach($getProduct->getSize as $size)
-                                            <option data-price="{{ !empty($size->price) ? number_format($size->price, 2) : 0 }}" value="{{ $size->id }}">
+                                            <option data-price="{{ !empty($size->price) ? $size->price : 0 }}" value="{{ $size->id }}">
                                                 {{ $size->name }}
                                                 @if(!empty($size->price))
-                                                (${{ number_format($size->price, 2) }})
+                                                ({{ App\Support\Money::format($size->price) }})
                                                 @endif
                                             </option>
 
@@ -361,12 +361,12 @@
                         </div><!-- End .product-cat -->
                         <h3 class="product-title"><a href="{{ url($value->slug) }}">{{ $value->title }}</a></h3><!-- End .product-title -->
                         <div class="product-price">
-                            ${{ number_format($value->price, 2) }}
+                            {{ App\Support\Money::format($value->price) }}
                         </div>
 
                         @if(isset($value->old_price) && $value->old_price)
                         <div class="old-price">
-                            was ${{ number_format($value->old_price, 2) }}
+                            was {{ App\Support\Money::format($value->old_price) }}
                         </div>
                         @endif
 
@@ -403,7 +403,7 @@
         var product_price = '{{ $getProduct->price }}';
         var price = $('option:selected', this).attr('data-price');
         var total = parseFloat(product_price) + parseFloat(price);
-        $('#getTotalPrice').html(total.toFixed(2));
+        $('#getTotalPrice').html('UGX ' + Math.round(total).toLocaleString());
     });
 
     $('#color').change(function() {

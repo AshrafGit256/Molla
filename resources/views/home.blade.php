@@ -232,12 +232,12 @@
                             </h3><!-- End .product-title -->
 
                             <div class="product-price" style="font-size: 20px; font-weight: bold; color: #FF5733;">
-                                ${{ number_format($value->price, 2) }}
+                                {{ App\Support\Money::format($value->price) }}
                             </div><!-- End .product-price -->
 
                             @if(isset($value->old_price) && $value->old_price)
                             <div class="old-price">
-                                was ${{ number_format($value->old_price, 2) }}
+                                was {{ App\Support\Money::format($value->old_price) }}
                             </div>
                             @endif
 

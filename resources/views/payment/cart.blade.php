@@ -125,14 +125,14 @@
 																@php
 																	$getSize = App\Models\ProductSizeModel::getSingle($size_id);
 																@endphp
-																	<div><b>Size:</b> {{ $getSize->name}} (${{ number_format($getSize->price) }})</div>
+																	<div><b>Size:</b> {{ $getSize->name}} ({{ App\Support\Money::format($getSize->price) }})</div>
 																@endif
 
 																
 															</h3><!-- End .product-title -->
 														</div><!-- End .product -->
 													</td>
-													<td class="price-col">${{ number_format($cart->price), 2 }}</td>
+													<td class="price-col">{{ App\Support\Money::format($cart->price) }}</td>
 													<td class="quantity-col">
 														<div class="cart-product-quantity">
 															<input type="number" class="form-control" value="{{ $cart->quantity }}" min="1" name="cart[ {{ $key }} ][qty]" max="100" step="1" data-decimals="0" required>
@@ -140,7 +140,7 @@
 															<input type="hidden" value="{{ $cart->id }}" name="cart[ {{ $key }} ][id]" >
 														</div><!-- End .cart-product-quantity -->
 													</td>
-													<td class="total-col">${{ number_format($cart->price * $cart->quantity ), 2 }}</td>
+													<td class="total-col">{{ App\Support\Money::format($cart->price * $cart->quantity) }}</td>
 													<td class="remove-col"><a href="{{ url('cart/delete/'.$cart->id) }}" class="btn-remove"><i class="icon-close"></i></a></td>
 												</tr>
 												@endif
@@ -164,12 +164,12 @@
 	                					<tbody>
 	                						<tr class="summary-subtotal">
 	                							<td>Subtotal:</td>
-	                							<td>${{ number_format(Cart::getSubTotal(), 2) }}</td>
+	                							<td>{{ App\Support\Money::format(Cart::getSubTotal()) }}</td>
 	                						</tr><!-- End .summary-subtotal -->
 
 	                						<tr class="summary-total">
 	                							<td>Total:</td>
-	                							<td>${{ number_format(Cart::getSubTotal(), 2) }}</td>
+	                							<td>{{ App\Support\Money::format(Cart::getSubTotal()) }}</td>
 	                						</tr><!-- End .summary-total -->
 	                					</tbody>
 	                				</table><!-- End .table table-summary -->

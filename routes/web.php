@@ -289,6 +289,7 @@ Route::get('header_cart/delete/{id}', [PaymentController::class, 'head_cart_dele
 
 Route::get('checkout', [PaymentController::class, 'checkout']);
 Route::post('checkout/apply_discount_code', [PaymentController::class, 'apply_discount_code']);
+Route::post('checkout/calculate_delivery', [PaymentController::class, 'calculate_delivery']);
 Route::post('checkout/place_order', [PaymentController::class, 'place_order']);
 Route::get('checkout/payment', [PaymentController::class, 'checkout_payment']);
 

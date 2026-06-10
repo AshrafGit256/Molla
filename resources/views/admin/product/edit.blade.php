@@ -167,8 +167,8 @@
                         <table class="table table-striped table-bordered">
                             <thead class="bg-info text-white">
                                 <tr>
-                                    <th>Old Price</th>
-                                    <th>New Price</th>
+                                    <th>Old Price (UGX)</th>
+                                    <th>New Price (UGX)</th>
                                 </tr>
                             </thead>
 
@@ -199,7 +199,7 @@
                             <thead class="bg-info text-white">
                                 <tr>
                                     <th>Name</th>
-                                    <th>Price($)</th>
+                                    <th>Price (UGX)</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

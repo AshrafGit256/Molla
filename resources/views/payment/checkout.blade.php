@@ -42,6 +42,21 @@
 		object-fit: cover;
 		border-radius: 8px;
 	}
+
+	.delivery-panel {
+		border: 1px solid #eeeeee;
+		border-radius: 8px;
+		padding: 1.25rem;
+		margin: 1.5rem 0;
+		background: #fff;
+	}
+
+	.delivery-estimate {
+		border-radius: 8px;
+		padding: 1rem;
+		background: #f8f9fa;
+		display: none;
+	}
 </style>
 @endsection
 
@@ -129,6 +144,31 @@
 	                					<label>Email address *</label>
 	        							<input type="email" value="{{ !empty(Auth::user()->email) ? Auth::user()->email: '' }}" name="email" class="form-control" required>
 
+										<div class="delivery-panel">
+											<h3 class="checkout-title mb-2">Fast boda delivery</h3>
+											<p class="mb-2">Use your current location or enter a destination. We target delivery within one hour, and longer trips are recalculated automatically.</p>
+											<label>Delivery destination *</label>
+											<input type="text" name="delivery_address" id="DeliveryAddress" class="form-control" placeholder="Example: Ntinda, Kampala Road, Makerere..." required>
+											<div class="row">
+												<div class="col-sm-6">
+													<label>Latitude *</label>
+													<input type="text" name="delivery_latitude" id="DeliveryLatitude" class="form-control" placeholder="0.3476" required>
+												</div>
+												<div class="col-sm-6">
+													<label>Longitude *</label>
+													<input type="text" name="delivery_longitude" id="DeliveryLongitude" class="form-control" placeholder="32.5825" required>
+												</div>
+											</div>
+											<input type="hidden" name="delivery_fee" id="DeliveryFee" value="0">
+											<input type="hidden" name="delivery_distance_km" id="DeliveryDistanceKm" value="">
+											<input type="hidden" name="delivery_duration_minutes" id="DeliveryDurationMinutes" value="">
+											<div class="d-flex flex-wrap" style="gap: .75rem;">
+												<button type="button" id="UseCurrentLocation" class="btn btn-outline-dark-2">Use my current location</button>
+												<button type="button" id="CalculateDelivery" class="btn btn-outline-primary-2">Calculate delivery</button>
+											</div>
+											<div id="DeliveryEstimate" class="delivery-estimate mt-2"></div>
+										</div>
+
 										@if(empty(Auth::check()))
 
 	        							<div class="custom-control custom-checkbox">
@@ -176,12 +216,12 @@
 															</div>
 														</div>
 													</td>
-		                							<td>${{ number_format($cart->price), 2 }}</td>
+		                							<td>{{ App\Support\Money::format($cart->price) }}</td>
 		                						</tr>
 											@endforeach
 		                						<tr class="summary-subtotal">
 		                							<td>Subtotal:</td>
-		                							<td>${{ number_format(Cart::getSubTotal(), 2) }}</td>
+		                							<td>{{ App\Support\Money::format(Cart::getSubTotal()) }}</td>
 		                						</tr><!-- End .summary-subtotal -->
 		                						
 
@@ -198,15 +238,22 @@
 													</td>
 												</tr>
 
-												<tr>
+		                						<tr>
 		                							<td>Discount:</td>
-		                							<td>$<span id="getDiscountAmount">0.00</span></td>
+		                							<td><span id="getDiscountAmount">UGX 0</span></td>
 		                						</tr><!-- End .summary-subtotal -->
 
 												<tr class="summary-shipping">
-													<td>Shipping:</td>
-													<td>&nbsp;</td>
+													<td>Boda delivery:</td>
+													<td><span id="DeliveryFeeDisplay">Calculate</span></td>
 												</tr>
+												<!-- Standard shipping choices are kept as a fallback but hidden while fast delivery is primary. -->
+												<tr style="display:none;">
+													<td colspan="2">
+														<input type="hidden" name="shipping" value="">
+													</td>
+												</tr>
+												{{--
 												@foreach($getShippingCharge as $shipping)
 													<tr class="summary-shipping-row">
 														<td>
@@ -232,11 +279,12 @@
 														</td>
 													</tr><!-- End .summary-shipping-row -->
 												@endforeach
+												--}}
 
 												
 		                						<tr class="summary-total">
 		                							<td>Total:</td>
-		                							<td>$<span id="getPayableTotal">{{ number_format(Cart::getSubTotal(), 2) }}</span></td>
+		                							<td><span id="getPayableTotal">{{ App\Support\Money::format(Cart::getSubTotal()) }}</span></td>
 		                						</tr><!-- End .summary-total -->
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->
@@ -252,13 +300,18 @@
 										</div>
 
 										<div class="custom-control custom-radio" style="margin-top: 0px;">
-											<input type="radio" value="paypal" id="Paypal" required name="payment_method" class="custom-control-input">
-											<label class="custom-control-label" for="Paypal">Paypal</label>
+											<input type="radio" value="mtn_mobile_money" id="MtnMobileMoney" required name="payment_method" class="custom-control-input">
+											<label class="custom-control-label" for="MtnMobileMoney">MTN Mobile Money</label>
 										</div>
 
 										<div class="custom-control custom-radio" style="margin-top: 0px;">
-											<input type="radio" value="stripe" id="CreditCard" required name="payment_method" class="custom-control-input">
-											<label class="custom-control-label" for="CreditCard">Credit Card</label>
+											<input type="radio" value="airtel_money" id="AirtelMoney" required name="payment_method" class="custom-control-input">
+											<label class="custom-control-label" for="AirtelMoney">Airtel Money</label>
+										</div>
+
+										<div class="custom-control custom-radio" style="margin-top: 0px;">
+											<input type="radio" value="gt_bank" id="GtBank" required name="payment_method" class="custom-control-input">
+											<label class="custom-control-label" for="GtBank">GT Bank Transfer</label>
 										</div>
 										    
 
@@ -308,7 +361,7 @@
 		var total = $('#PayableTotal').val();
 		$('#getshippingChargeTotal').val(price)
 		var final_total = parseFloat(price) + parseFloat(total);
-		$('#getPayableTotal').html(final_total.toFixed(2))
+		$('#getPayableTotal').html(formatUgx(final_total))
 		
 		
 	});
@@ -348,13 +401,13 @@
 					discount_code : discount_code,
 					"_token": "{{ csrf_token() }}",
 				},
-				dataType: "json",
-				success: function(data) {
-					$('#getDiscountAmount').html(data.discount_amount)
-					var shipping = $('#getshippingChargeTotal').val();
-					var final_total = parseFloat(shipping) + parseFloat(data.payable_total);
-					$('#getPayableTotal').html(final_total.toFixed(2))
-					$('#PayableTotal').val(data.payable_total);
+			dataType: "json",
+			success: function(data) {
+				$('#getDiscountAmount').html(data.discount_amount_display || data.discount_amount)
+				var shipping = $('#getshippingChargeTotal').val();
+				var final_total = parseFloat(shipping) + parseFloat(data.payable_total);
+				$('#getPayableTotal').html(formatUgx(final_total))
+				$('#PayableTotal').val(data.payable_total);
 					if(data.status == false)
 					{
 						alert(data.message);
@@ -366,6 +419,72 @@
 				}
 			});
 		})
+
+	function formatUgx(amount) {
+		return 'UGX ' + Math.round(parseFloat(amount || 0)).toLocaleString();
+	}
+
+	function calculateDelivery() {
+		var latitude = $('#DeliveryLatitude').val();
+		var longitude = $('#DeliveryLongitude').val();
+
+		if(!latitude || !longitude) {
+			alert('Please provide destination latitude and longitude, or use your current location.');
+			return;
+		}
+
+		$('#DeliveryEstimate').show().html('Calculating boda delivery...');
+
+		$.ajax({
+			type: "POST",
+			url: "{{ url('checkout/calculate_delivery') }}",
+			data: {
+				latitude: latitude,
+				longitude: longitude,
+				"_token": "{{ csrf_token() }}",
+			},
+			dataType: "json",
+			success: function(data) {
+				$('#DeliveryFee').val(data.fee);
+				$('#DeliveryDistanceKm').val(data.distance_km);
+				$('#DeliveryDurationMinutes').val(data.duration_minutes);
+				$('#getshippingChargeTotal').val(data.fee);
+				$('#DeliveryFeeDisplay').html(data.fee_display);
+
+				var payable = parseFloat($('#PayableTotal').val() || 0) + parseFloat(data.fee);
+				$('#getPayableTotal').html(formatUgx(payable));
+				$('#DeliveryEstimate').html(
+					'<strong>' + data.fee_display + '</strong><br>' +
+					data.distance_km + ' km • about ' + data.duration_minutes + ' minutes<br>' +
+					data.message
+				);
+			},
+			error: function() {
+				$('#DeliveryEstimate').html('Could not calculate delivery. Please check the coordinates and try again.');
+			}
+		});
+	}
+
+	$('#CalculateDelivery').click(calculateDelivery);
+
+	$('#UseCurrentLocation').click(function() {
+		if(!navigator.geolocation) {
+			alert('Your browser does not support current location.');
+			return;
+		}
+
+		$('#DeliveryEstimate').show().html('Getting your current location...');
+		navigator.geolocation.getCurrentPosition(function(position) {
+			$('#DeliveryLatitude').val(position.coords.latitude.toFixed(7));
+			$('#DeliveryLongitude').val(position.coords.longitude.toFixed(7));
+			if(!$('#DeliveryAddress').val()) {
+				$('#DeliveryAddress').val('Customer current location');
+			}
+			calculateDelivery();
+		}, function() {
+			$('#DeliveryEstimate').html('Location permission was not granted. You can enter latitude and longitude manually.');
+		});
+	});
 </script>
 
 @endsection

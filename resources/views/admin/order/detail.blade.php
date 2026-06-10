@@ -148,11 +148,23 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label><i class="fas fa-plane"></i> Shipping Amount: <span>{{ number_format($getRecord->shipping_amount, 2) }}</span></label>
+                                        <label><i class="fas fa-plane"></i> Delivery Amount: <span>{{ App\Support\Money::format($getRecord->shipping_amount) }}</span></label>
                                     </div>
 
                                     <div class="form-group">
-                                        <label><i class="fas fa-dollar-sign"></i> Total Amount: <span>{{ number_format($getRecord->total_amount, 2) }}</span></label>
+                                        <label><i class="fas fa-motorcycle"></i> Delivery Estimate:
+                                            <span>
+                                                @if(!empty($getRecord->delivery_distance_km))
+                                                    {{ $getRecord->delivery_distance_km }} km, about {{ $getRecord->delivery_duration_minutes }} minutes
+                                                @else
+                                                    Not calculated
+                                                @endif
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label><i class="fas fa-dollar-sign"></i> Total Amount: <span>{{ App\Support\Money::format($getRecord->total_amount) }}</span></label>
                                     </div>
                                 </div>
 
@@ -165,6 +177,9 @@
                                     </div>
                                     <div class="form-group">
                                         <label><i class="fas fa-home"></i> Address: <span>{{ $getRecord->address_one }}, {{ $getRecord->address_two }}</span></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label><i class="fas fa-map-pin"></i> Delivery Destination: <span>{{ $getRecord->delivery_address ?: 'Not provided' }}</span></label>
                                     </div>
                                     <div class="form-group">
                                         <label><i class="fas fa-city"></i> City: <span>{{ $getRecord->city }}</span></label>
@@ -209,7 +224,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label><i class="fas fa-money-bill-wave"></i> Discount Amount: <span>{{ number_format($getRecord->discount_amount, 2) }}</span></label>
+                                <label><i class="fas fa-money-bill-wave"></i> Discount Amount: <span>{{ App\Support\Money::format($getRecord->discount_amount) }}</span></label>
                             </div>
 
                            
@@ -265,13 +280,13 @@
                             </td>
                             <td>{{ $item->getProduct->title }}</td>
                             <td>{{ $item->quantity }}</td>
-                            <td>${{ $item->price }}</td>
+                            <td>{{ App\Support\Money::format($item->price) }}</td>
                             <td>{{ $item->size_name }}</td>
                             <td>{{ $item->color_name }}</td>
                             
-                            <td>{{ $item->size_amount }}</td>
+                            <td>{{ App\Support\Money::format($item->size_amount) }}</td>
                             
-                            <td>${{ $item->quantity * $item->price }}</td>
+                            <td>{{ App\Support\Money::format($item->quantity * $item->price) }}</td>
                         </tr>
                         @endforeach
                     </tbody>

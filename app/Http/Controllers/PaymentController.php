@@ -14,6 +14,8 @@ use App\Models\OrderModel;
 use App\Models\OrderItemModel;
 use App\Models\NotificationModel;
 use App\Models\User;
+use App\Support\DeliveryEstimator;
+use App\Support\Money;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OrderInvoiceMail;
@@ -39,15 +41,17 @@ class PaymentController extends Controller
 
             $json = [
                 'status' => true,
-                'discount_amount' => number_format($discount_amount, 2),
-                'payable_total' => number_format($payable_total, 2),
+                'discount_amount' => $discount_amount,
+                'discount_amount_display' => Money::format($discount_amount),
+                'payable_total' => $payable_total,
                 'message' => "Success"
             ];
         } else {
             $json = [
                 'status' => false,
-                'discount_amount' => 0.00,
-                'payable_total' => number_format($total, 2),
+                'discount_amount' => 0,
+                'discount_amount_display' => Money::format(0),
+                'payable_total' => $total,
                 'message' => "Discount code not found"
             ];
         }
@@ -65,6 +69,29 @@ class PaymentController extends Controller
         ];
 
         return view('payment.checkout', $data);
+    }
+
+    public function calculate_delivery(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+
+        $estimate = DeliveryEstimator::estimate((float) $request->latitude, (float) $request->longitude);
+
+        return response()->json([
+            'status' => true,
+            'distance_km' => $estimate['distance_km'],
+            'duration_minutes' => $estimate['duration_minutes'],
+            'fee' => $estimate['fee'],
+            'fee_display' => Money::format($estimate['fee']),
+            'total' => Cart::getSubTotal() + $estimate['fee'],
+            'total_display' => Money::format(Cart::getSubTotal() + $estimate['fee']),
+            'message' => $estimate['one_hour_delivery']
+                ? 'Fast boda delivery available within one hour.'
+                : 'This destination is farther than the one-hour delivery zone, so time has been recalculated.',
+        ]);
     }
 
     public function cart(Request $request)
@@ -170,7 +197,12 @@ class PaymentController extends Controller
     $order = new OrderModel;
     $order->user_id = $user_id;
 
-    $getShipping = ShippingChargeModel::getsingle($request->shipping);
+    $deliveryEstimate = null;
+    if (!empty($request->delivery_latitude) && !empty($request->delivery_longitude)) {
+        $deliveryEstimate = DeliveryEstimator::estimate((float) $request->delivery_latitude, (float) $request->delivery_longitude);
+    }
+
+    $getShipping = !empty($request->shipping) ? ShippingChargeModel::getsingle($request->shipping) : null;
     $payable_total = Cart::getSubTotal();
     $discount_amount = 0;
     $discount_code = '';
@@ -186,7 +218,7 @@ class PaymentController extends Controller
         }
     }
 
-    $shipping_amount = !empty($getShipping->price) ? $getShipping->price : 0;
+    $shipping_amount = !empty($deliveryEstimate) ? $deliveryEstimate['fee'] : (!empty($getShipping->price) ? $getShipping->price : 0);
     $total_amount = $payable_total + $shipping_amount;
 
     // Fill order details
@@ -205,8 +237,13 @@ class PaymentController extends Controller
     $order->note = trim($request->note);
     $order->discount_amount = trim($discount_amount);
     $order->discount_code = trim($discount_code);
-    $order->shipping_id = trim($request->shipping);
+    $order->shipping_id = !empty($request->shipping) ? trim($request->shipping) : null;
     $order->shipping_amount = trim($shipping_amount);
+    $order->delivery_address = trim($request->delivery_address);
+    $order->delivery_latitude = !empty($request->delivery_latitude) ? trim($request->delivery_latitude) : null;
+    $order->delivery_longitude = !empty($request->delivery_longitude) ? trim($request->delivery_longitude) : null;
+    $order->delivery_distance_km = !empty($deliveryEstimate) ? $deliveryEstimate['distance_km'] : null;
+    $order->delivery_duration_minutes = !empty($deliveryEstimate) ? $deliveryEstimate['duration_minutes'] : null;
     $order->total_amount = trim($total_amount);
     $order->payment_method = trim($request->payment_method);
     $order->save();
@@ -251,10 +288,11 @@ class PaymentController extends Controller
             
             if(!empty($getOrder))
             {
-                if($getOrder->payment_method == 'cash')
+                if(in_array($getOrder->payment_method, ['cash', 'mtn_mobile_money', 'airtel_money', 'gt_bank']))
                 {
                     $getOrder->is_payment = 1;
                     $getOrder->save();
+                    $this->deductInventoryForOrder($getOrder);
 
                    try
                    {
@@ -293,5 +331,25 @@ class PaymentController extends Controller
         {
             abort(404);
         }
+    }
+
+    private function deductInventoryForOrder(OrderModel $order): void
+    {
+        if (!empty($order->inventory_deducted_at)) {
+            return;
+        }
+
+        foreach ($order->getItem as $item) {
+            $product = ProductModel::getSingle($item->product_id);
+
+            if (!empty($product)) {
+                $product->in_stock = max(0, (int) $product->in_stock - (int) $item->quantity);
+                $product->out_of_stock = (int) $product->out_of_stock + (int) $item->quantity;
+                $product->save();
+            }
+        }
+
+        $order->inventory_deducted_at = now();
+        $order->save();
     }
 }

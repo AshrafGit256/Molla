@@ -75,7 +75,7 @@
             <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill-wave"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Total Amount</span>
-                <span class="info-box-number">${{ number_format($TotalAmount, 2) }}</span>
+                <span class="info-box-number">{{ App\Support\Money::format($TotalAmount) }}</span>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@
             <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-dollar-sign"></i></span>
             <div class="info-box-content">
                 <span class="info-box-text">Today Amount</span>
-                <span class="info-box-number">${{ number_format($TotalTodayAmount, 2) }}</span>
+                <span class="info-box-number">{{ App\Support\Money::format($TotalTodayAmount) }}</span>
             </div>
         </div>
     </div>
@@ -160,7 +160,7 @@
                   <div class="work-list-item">
                     <div>
                       <div class="work-list-title">#{{ $order->order_number }}</div>
-                      <div class="work-list-meta">{{ $order->first_name }} {{ $order->last_name }} • ${{ number_format($order->total_amount, 2) }}</div>
+                      <div class="work-list-meta">{{ $order->first_name }} {{ $order->last_name }} • {{ App\Support\Money::format($order->total_amount) }}</div>
                     </div>
                     <a href="{{ url('admin/order/detail/'.$order->id) }}" class="btn btn-sm btn-success align-self-start">Open</a>
                   </div>
@@ -230,7 +230,7 @@
               <div class="card-body">
                 <div class="d-flex">
                   <p class="d-flex flex-column">
-                    <span class="text-bold text-lg">${{ number_format($TotalAmount, 2) }}</span>
+                    <span class="text-bold text-lg">{{ App\Support\Money::format($TotalAmount) }}</span>
                     <span>Sales Over Time</span>
                   </p>
                   
@@ -305,9 +305,9 @@
                             
                     
                     <td>{{$value->discount_code}}</td>
-                    <td>{{ number_format($value->discount_amount, 2) }}</td>
-                    <td>{{ number_format($value->shipping_amount, 2) }}</td>
-                    <td>{{ number_format($value->total_amount, 2) }}</td>
+                    <td>{{ App\Support\Money::format($value->discount_amount) }}</td>
+                    <td>{{ App\Support\Money::format($value->shipping_amount) }}</td>
+                    <td>{{ App\Support\Money::format($value->total_amount) }}</td>
                     <td style="text-transform: capitalize;">{{$value->payment_method}}</td>
                     
                     <td>{{ date('d-m-y h:i A', strtotime($value->created_at)) }}</td>

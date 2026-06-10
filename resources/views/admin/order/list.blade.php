@@ -172,9 +172,9 @@
                   
                   <td>{{$value->email}}</td>
                   <td>{{$value->discount_code}}</td>
-                  <td>{{ number_format($value->discount_amount, 2) }}</td>
-                  <td>{{ number_format($value->shipping_amount, 2) }}</td>
-                  <td>{{ number_format($value->total_amount, 2) }}</td>
+                  <td>{{ App\Support\Money::format($value->discount_amount) }}</td>
+                  <td>{{ App\Support\Money::format($value->shipping_amount) }}</td>
+                  <td>{{ App\Support\Money::format($value->total_amount) }}</td>
                   <td style="text-transform: capitalize;">{{$value->payment_method}}</td>
                   <td>
                     <select class="form-control ChangeStatus" id="{{ $value->id }}" style="width: 150px;">
