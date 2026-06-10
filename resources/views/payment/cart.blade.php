@@ -182,7 +182,7 @@
 	                	</div><!-- End .row -->
                         @else
 							<div class="cart-empty-panel">
-								<h2>Your cart is waiting.</h2>
+								<h2>Continue Shopping ..</h2>
 								<p>Find something you like, choose your color and size, and it will appear here.</p>
 								<a href="{{ url('search') }}" class="btn btn-outline-primary-2"><span>Explore products</span><i class="icon-long-arrow-right"></i></a>
 							</div>

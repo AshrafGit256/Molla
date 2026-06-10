@@ -27,6 +27,30 @@ class DashboardController extends Controller
             ->orderBy('id', 'desc')
             ->limit(5)
             ->get();
+        $data['orderStatusCounts'] = [
+            'pending' => OrderModel::where('is_payment', 1)->where('is_delete', 0)->where('status', 0)->count(),
+            'in_progress' => OrderModel::where('is_payment', 1)->where('is_delete', 0)->where('status', 1)->count(),
+            'delivered' => OrderModel::where('is_payment', 1)->where('is_delete', 0)->where('status', 2)->count(),
+            'completed' => OrderModel::where('is_payment', 1)->where('is_delete', 0)->where('status', 3)->count(),
+            'cancelled' => OrderModel::where('is_payment', 1)->where('is_delete', 0)->where('status', 4)->count(),
+        ];
+        $data['oneHourOrders'] = OrderModel::where('is_payment', 1)
+            ->where('is_delete', 0)
+            ->whereNotNull('delivery_duration_minutes')
+            ->where('delivery_duration_minutes', '<=', 60)
+            ->count();
+        $data['farDeliveryOrders'] = OrderModel::where('is_payment', 1)
+            ->where('is_delete', 0)
+            ->where('delivery_duration_minutes', '>', 60)
+            ->count();
+        $data['averageDeliveryMinutes'] = round((float) OrderModel::where('is_payment', 1)
+            ->where('is_delete', 0)
+            ->whereNotNull('delivery_duration_minutes')
+            ->avg('delivery_duration_minutes'));
+        $data['averageOrderValue'] = $data['TotalOrder'] > 0 ? $data['TotalAmount'] / $data['TotalOrder'] : 0;
+        $data['activeProductCount'] = ProductModel::where('is_delete', 0)->where('status', 0)->count();
+        $data['totalUnitsInStock'] = ProductModel::where('is_delete', 0)->where('status', 0)->sum('in_stock');
+        $data['totalUnitsSold'] = ProductModel::where('is_delete', 0)->sum('out_of_stock');
         $data['lowStockProducts'] = ProductModel::where('is_delete', 0)
             ->where('status', 0)
             ->where('in_stock', '<=', 10)

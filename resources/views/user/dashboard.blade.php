@@ -23,14 +23,14 @@
         }
 
         /* Custom colors for different order types */
-        .box-total { background-color: #007bff; }
-        .box-today { background-color: #28a745; }
-        .box-amount { background-color: #ffc107; }
-        .box-in-progress { background-color: #17a2b8; }
-        .box-pending { background-color: #fd7e14; }
-        .box-completed { background-color: #6f42c1; }
-        .box-cancelled { background-color: #dc3545; }
-        .box-delivered { background-color: #20c997; } /* Delivered Orders box */
+        .box-total      { background-color: #3E1F00; } /* Deep espresso       */
+        .box-today      { background-color: #6B3A2A; } /* Aged mahogany       */
+        .box-amount     { background-color: #8B5E3C; } /* Warm chestnut       */
+        .box-in-progress{ background-color: #A67C52; } /* Caramel oak         */
+        .box-pending    { background-color: #C49A6C; } /* Toasted sand        */
+        .box-completed  { background-color: #4A2C17; } /* Dark walnut         */
+        .box-cancelled  { background-color: #7A3B1E; } /* Burnt sienna        */
+        .box-delivered  { background-color: #D4A574; } /* Soft butterscotch   */ /* Delivered Orders box */
         
         .box-btn h3, .box-btn p {
             color: white;

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('style')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 	.checkout-steps {
 		display: flex;
@@ -57,6 +58,41 @@
 		background: #f8f9fa;
 		display: none;
 	}
+
+	.delivery-map {
+		height: 320px;
+		border-radius: 8px;
+		border: 1px solid #eeeeee;
+		margin: 1rem 0;
+		overflow: hidden;
+	}
+
+	.ug-location-help {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: .75rem;
+		margin: 1rem 0;
+	}
+
+	.ug-location-help div {
+		border: 1px solid #eeeeee;
+		border-radius: 8px;
+		padding: .85rem;
+		background: #fff;
+		font-size: 13px;
+	}
+
+	@media (max-width: 767px) {
+		.checkout-steps,
+		.ug-location-help {
+			display: block;
+		}
+
+		.checkout-step,
+		.ug-location-help div {
+			margin-bottom: .75rem;
+		}
+	}
 </style>
 @endsection
 
@@ -107,36 +143,26 @@
 		                					</div><!-- End .col-sm-6 -->
 		                				</div><!-- End .row -->
 
-	            						<label>Company Name (Optional)</label>
+	            						<label>Business / Shop Name (Optional)</label>
 	            						<input type="text" value="{{ !empty(Auth::user()->company_name) ? Auth::user()->company_name: '' }}" name="company_name" class="form-control">
 
-	            						<label>Country *</label>
-	            						<input type="text" value="{{ !empty(Auth::user()->country) ? Auth::user()->country: '' }}" name="country" class="form-control" required>
+	            						<input type="hidden" value="Uganda" name="country">
+										<input type="hidden" value="Central" name="state">
+										<input type="hidden" value="00000" name="postcode">
 
-	            						<label>Street address *</label>
-	            						<input type="text" value="{{ !empty(Auth::user()->address_one) ? Auth::user()->address_one: '' }}" name="address_one" class="form-control" placeholder="House number and Street name" required>
-	            						<input type="text" value="{{ !empty(Auth::user()->address_two) ? Auth::user()->address_two: '' }}" name="address_two" class="form-control" placeholder="Appartments, suite, unit etc ..." required>
+	            						<label>Area / Village / Trading Centre *</label>
+	            						<input type="text" value="{{ !empty(Auth::user()->address_one) ? Auth::user()->address_one: '' }}" name="address_one" class="form-control" placeholder="Example: Kireka, Bweyogerere, Kansanga, Wandegeya" required>
+	            						<label>Nearest landmark, stage, building, or shop</label>
+	            						<input type="text" value="{{ !empty(Auth::user()->address_two) ? Auth::user()->address_two: '' }}" name="address_two" class="form-control" placeholder="Example: near Shell, behind the taxi stage, opposite the church">
 
 	            						<div class="row">
 		                					<div class="col-sm-6">
-		                						<label>Town / City *</label>
-		                						<input type="text" value="{{ !empty(Auth::user()->city) ? Auth::user()->city: '' }}" name="city" class="form-control" required>
+		                						<label>Town / District *</label>
+		                						<input type="text" value="{{ !empty(Auth::user()->city) ? Auth::user()->city: '' }}" name="city" class="form-control" placeholder="Example: Kampala, Wakiso, Mukono, Entebbe" required>
 		                					</div><!-- End .col-sm-6 -->
 
 		                					<div class="col-sm-6">
-		                						<label>State *</label>
-		                						<input type="text" value="{{ !empty(Auth::user()->state) ? Auth::user()->state: '' }}" name="state" class="form-control" required>
-		                					</div><!-- End .col-sm-6 -->
-		                				</div><!-- End .row -->
-
-		                				<div class="row">
-		                					<div class="col-sm-6">
-		                						<label>Postcode / ZIP *</label>
-		                						<input type="text" value="{{ !empty(Auth::user()->postcode) ? Auth::user()->postcode: '' }}" name="postcode" class="form-control" required>
-		                					</div><!-- End .col-sm-6 -->
-
-		                					<div class="col-sm-6">
-		                						<label>Phone *</label>
+		                						<label>Phone / WhatsApp *</label>
 		                						<input type="tel" value="{{ !empty(Auth::user()->phone) ? Auth::user()->phone: '' }}" name="phone" class="form-control" required>
 		                					</div><!-- End .col-sm-6 -->
 		                				</div><!-- End .row -->
@@ -146,19 +172,17 @@
 
 										<div class="delivery-panel">
 											<h3 class="checkout-title mb-2">Fast boda delivery</h3>
-											<p class="mb-2">Use your current location or enter a destination. We target delivery within one hour, and longer trips are recalculated automatically.</p>
-											<label>Delivery destination *</label>
-											<input type="text" name="delivery_address" id="DeliveryAddress" class="form-control" placeholder="Example: Ntinda, Kampala Road, Makerere..." required>
-											<div class="row">
-												<div class="col-sm-6">
-													<label>Latitude *</label>
-													<input type="text" name="delivery_latitude" id="DeliveryLatitude" class="form-control" placeholder="0.3476" required>
-												</div>
-												<div class="col-sm-6">
-													<label>Longitude *</label>
-													<input type="text" name="delivery_longitude" id="DeliveryLongitude" class="form-control" placeholder="32.5825" required>
-												</div>
+											<p class="mb-2">Drop the pin where the rider should come. You can also use your current location if you are already at the delivery place.</p>
+											<div class="ug-location-help">
+												<div><strong>1. Tell us the area</strong><br>Use names people know: stage, school, mall, church, market.</div>
+												<div><strong>2. Pin the place</strong><br>Tap the map or use current location.</div>
+												<div><strong>3. Get boda estimate</strong><br>We calculate fee and time before you pay.</div>
 											</div>
+											<label>Delivery notes for the rider *</label>
+											<input type="text" name="delivery_address" id="DeliveryAddress" class="form-control" placeholder="Example: Kireka, near Shell, call when at the gate" required>
+											<div id="DeliveryMap" class="delivery-map"></div>
+											<input type="hidden" name="delivery_latitude" id="DeliveryLatitude" required>
+											<input type="hidden" name="delivery_longitude" id="DeliveryLongitude" required>
 											<input type="hidden" name="delivery_fee" id="DeliveryFee" value="0">
 											<input type="hidden" name="delivery_distance_km" id="DeliveryDistanceKm" value="">
 											<input type="hidden" name="delivery_duration_minutes" id="DeliveryDurationMinutes" value="">
@@ -341,7 +365,62 @@
     
 
 @section('script')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="text/javascript">
+	var storeLatitude = {{ $storeLatitude }};
+	var storeLongitude = {{ $storeLongitude }};
+	var deliveryMap;
+	var storeMarker;
+	var customerMarker;
+	var routeLine;
+
+	function bootDeliveryMap() {
+		if(typeof L === 'undefined') {
+			$('#DeliveryEstimate').show().html('Map could not load. You can still use your current location button.');
+			return;
+		}
+
+		deliveryMap = L.map('DeliveryMap').setView([storeLatitude, storeLongitude], 12);
+		L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; OpenStreetMap'
+		}).addTo(deliveryMap);
+
+		storeMarker = L.marker([storeLatitude, storeLongitude]).addTo(deliveryMap).bindPopup('Dispatch point');
+
+		deliveryMap.on('click', function(e) {
+			setDeliveryPin(e.latlng.lat, e.latlng.lng, true);
+		});
+	}
+
+	function setDeliveryPin(latitude, longitude, shouldCalculate) {
+		$('#DeliveryLatitude').val(latitude.toFixed(7));
+		$('#DeliveryLongitude').val(longitude.toFixed(7));
+
+		if(customerMarker) {
+			customerMarker.setLatLng([latitude, longitude]);
+		} else {
+			customerMarker = L.marker([latitude, longitude], { draggable: true }).addTo(deliveryMap).bindPopup('Delivery point');
+			customerMarker.on('dragend', function(event) {
+				var position = event.target.getLatLng();
+				setDeliveryPin(position.lat, position.lng, true);
+			});
+		}
+
+		if(routeLine) {
+			routeLine.remove();
+		}
+
+		routeLine = L.polyline([[storeLatitude, storeLongitude], [latitude, longitude]], { color: '#007bff', weight: 4 }).addTo(deliveryMap);
+		deliveryMap.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
+
+		if(shouldCalculate) {
+			calculateDelivery();
+		}
+	}
+
+	bootDeliveryMap();
+
 	
 	$('body').delegate('.createAccount', 'click', function(){
 		if(this.checked)
@@ -475,12 +554,10 @@
 
 		$('#DeliveryEstimate').show().html('Getting your current location...');
 		navigator.geolocation.getCurrentPosition(function(position) {
-			$('#DeliveryLatitude').val(position.coords.latitude.toFixed(7));
-			$('#DeliveryLongitude').val(position.coords.longitude.toFixed(7));
 			if(!$('#DeliveryAddress').val()) {
 				$('#DeliveryAddress').val('Customer current location');
 			}
-			calculateDelivery();
+			setDeliveryPin(position.coords.latitude, position.coords.longitude, true);
 		}, function() {
 			$('#DeliveryEstimate').html('Location permission was not granted. You can enter latitude and longitude manually.');
 		});

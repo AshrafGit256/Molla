@@ -176,19 +176,19 @@
                                         <label><i class="fas fa-building"></i> Company Name: <span>{{ $getRecord->company_name }}</span></label>
                                     </div>
                                     <div class="form-group">
-                                        <label><i class="fas fa-home"></i> Address: <span>{{ $getRecord->address_one }}, {{ $getRecord->address_two }}</span></label>
+                                        <label><i class="fas fa-home"></i> Area / Landmark: <span>{{ $getRecord->address_one }}{{ !empty($getRecord->address_two) ? ', '.$getRecord->address_two : '' }}</span></label>
                                     </div>
                                     <div class="form-group">
                                         <label><i class="fas fa-map-pin"></i> Delivery Destination: <span>{{ $getRecord->delivery_address ?: 'Not provided' }}</span></label>
                                     </div>
                                     <div class="form-group">
-                                        <label><i class="fas fa-city"></i> City: <span>{{ $getRecord->city }}</span></label>
+                                        <label><i class="fas fa-city"></i> Town / District: <span>{{ $getRecord->city }}</span></label>
                                     </div>
                                     <div class="form-group">
-                                        <label><i class="fas fa-map-marker-alt"></i> State: <span>{{ $getRecord->state }}</span></label>
+                                        <label><i class="fas fa-map-marker-alt"></i> Region: <span>{{ $getRecord->state }}</span></label>
                                     </div>
                                     <div class="form-group">
-                                        <label><i class="fas fa-envelope"></i> Post Code: <span>{{ $getRecord->postcode }}</span></label>
+                                        <label><i class="fas fa-envelope"></i> Postal Code: <span>{{ $getRecord->postcode ?: 'Not used' }}</span></label>
                                     </div>
                                     <div class="form-group">
                                         <label><i class="fas fa-credit-card"></i> Payment Method: <span>{{ $getRecord->payment_method }}</span></label>

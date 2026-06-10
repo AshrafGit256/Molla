@@ -27,6 +27,26 @@
     color: #b9c0c7;
     font-size: 12px;
   }
+
+  .ops-metric {
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 8px;
+    padding: 1rem;
+    background: rgba(255,255,255,.03);
+    height: 100%;
+  }
+
+  .ops-metric-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .status-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
 </style>
 @endsection
 
@@ -209,6 +229,82 @@
                 @empty
                   <p class="text-muted mb-0">No customers yet.</p>
                 @endforelse
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="card">
+              <div class="card-header border-0">
+                <h3 class="card-title"><i class="fas fa-motorcycle mr-2"></i>Delivery Command Centre</h3>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-3 col-6 mb-3">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ $oneHourOrders }}</span>
+                      <span class="work-list-meta">Orders inside 1-hour promise</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-6 mb-3">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ $farDeliveryOrders }}</span>
+                      <span class="work-list-meta">Far deliveries recalculated</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-6 mb-3">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ $averageDeliveryMinutes ?: 0 }} min</span>
+                      <span class="work-list-meta">Average delivery estimate</span>
+                    </div>
+                  </div>
+                  <div class="col-md-3 col-6 mb-3">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ App\Support\Money::format($averageOrderValue) }}</span>
+                      <span class="work-list-meta">Average order value</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="status-pill-row">
+                  <span class="badge badge-warning">Pending: {{ $orderStatusCounts['pending'] }}</span>
+                  <span class="badge badge-info">In progress: {{ $orderStatusCounts['in_progress'] }}</span>
+                  <span class="badge badge-primary">Delivered: {{ $orderStatusCounts['delivered'] }}</span>
+                  <span class="badge badge-success">Completed: {{ $orderStatusCounts['completed'] }}</span>
+                  <span class="badge badge-danger">Cancelled: {{ $orderStatusCounts['cancelled'] }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <div class="card">
+              <div class="card-header border-0">
+                <h3 class="card-title"><i class="fas fa-warehouse mr-2"></i>Stock Pulse</h3>
+              </div>
+              <div class="card-body">
+                <div class="work-list-item">
+                  <div>
+                    <div class="work-list-title">Active products</div>
+                    <div class="work-list-meta">Visible products customers can buy</div>
+                  </div>
+                  <span class="badge badge-primary align-self-start">{{ $activeProductCount }}</span>
+                </div>
+                <div class="work-list-item">
+                  <div>
+                    <div class="work-list-title">Units in stock</div>
+                    <div class="work-list-meta">Available across active products</div>
+                  </div>
+                  <span class="badge badge-success align-self-start">{{ $totalUnitsInStock }}</span>
+                </div>
+                <div class="work-list-item">
+                  <div>
+                    <div class="work-list-title">Units sold</div>
+                    <div class="work-list-meta">Reflected in sold out column</div>
+                  </div>
+                  <span class="badge badge-secondary align-self-start">{{ $totalUnitsSold }}</span>
+                </div>
               </div>
             </div>
           </div>

@@ -65,7 +65,9 @@ class PaymentController extends Controller
             'meta_title' => 'Checkout',
             'meta_description' => '',
             'meta_keywords' => '',
-            'getShippingCharge' => ShippingChargeModel::getRecordActive()
+            'getShippingCharge' => ShippingChargeModel::getRecordActive(),
+            'storeLatitude' => (float) env('STORE_LATITUDE', 0.3476),
+            'storeLongitude' => (float) env('STORE_LONGITUDE', 32.5825),
         ];
 
         return view('payment.checkout', $data);

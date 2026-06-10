@@ -54,7 +54,7 @@
     }
 
     .table th {
-        background-color: #007bff;
+        background-color: #C49A6C;
         color: #fff;
         font-weight: bold;
         text-align: center;
