@@ -6,6 +6,7 @@ use App\Models\ProductModel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class ProductImageSeeder extends Seeder
 {
@@ -67,6 +68,33 @@ class ProductImageSeeder extends Seeder
                         'created_at' => now(),
                     ]
                 );
+
+                if (Schema::hasTable('product_image_color')) {
+                    $image = DB::table('product_image')
+                        ->where('product_id', $product->id)
+                        ->where('order_by', $index + 1)
+                        ->first();
+
+                    $productColorIds = DB::table('product_color')
+                        ->where('product_id', $product->id)
+                        ->pluck('color_id')
+                        ->values();
+
+                    if (!empty($image) && $productColorIds->count() > 0) {
+                        $colorId = $productColorIds[$index % $productColorIds->count()];
+
+                        DB::table('product_image_color')->updateOrInsert(
+                            [
+                                'product_image_id' => $image->id,
+                                'color_id' => $colorId,
+                            ],
+                            [
+                                'updated_at' => now(),
+                                'created_at' => now(),
+                            ]
+                        );
+                    }
+                }
             }
         }
     }

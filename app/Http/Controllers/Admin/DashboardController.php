@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\OrderModel;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\ProductModel;
 
 class DashboardController extends Controller
 {
@@ -20,6 +21,28 @@ class DashboardController extends Controller
         $data['TotalTodayCustomer'] = User::getTotalTodayCustomer();
 
         $data['getLatestOrders'] = OrderModel::getLatestOrders();
+        $data['pendingOrders'] = OrderModel::where('is_payment', 1)
+            ->where('is_delete', 0)
+            ->where('status', 0)
+            ->orderBy('id', 'desc')
+            ->limit(5)
+            ->get();
+        $data['lowStockProducts'] = ProductModel::where('is_delete', 0)
+            ->where('status', 0)
+            ->where('in_stock', '<=', 10)
+            ->orderBy('in_stock', 'asc')
+            ->limit(5)
+            ->get();
+        $data['missingImageProducts'] = ProductModel::where('is_delete', 0)
+            ->where('status', 0)
+            ->whereDoesntHave('getImage')
+            ->limit(5)
+            ->get();
+        $data['recentCustomers'] = User::where('is_admin', 0)
+            ->where('is_delete', 0)
+            ->orderBy('id', 'desc')
+            ->limit(5)
+            ->get();
 
         if(!empty($request->year))
         {

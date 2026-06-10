@@ -46,8 +46,8 @@ class ProductController extends Controller
 
             $data['getProduct'] = $getProduct;
 
-            $data['getColor'] = ColorModel::getRecordActive();
-            $data['getBrand'] = BrandModel::getRecordActive();
+            $data['getColor'] = ColorModel::getAvailableForProducts(null, null, $request->get('q'));
+            $data['getBrand'] = BrandModel::getAvailableForProducts(null, null, $request->get('q'));
 
             return view('product.list', $data);
         
@@ -61,11 +61,21 @@ class ProductController extends Controller
         $getSubCategory = SubCategoryModel::getSingleSlug($subslug);
 
         $data['getColor'] = ColorModel::getRecordActive();
-
         $data['getBrand'] = BrandModel::getRecordActive();
 
         if(!empty($getProductSingle))
         {
+            $recentlyViewed = collect(session('recently_viewed_products', []))
+                ->reject(function ($productId) use ($getProductSingle) {
+                    return $productId == $getProductSingle->id;
+                })
+                ->prepend($getProductSingle->id)
+                ->take(12)
+                ->values()
+                ->all();
+
+            session(['recently_viewed_products' => $recentlyViewed]);
+
             $data['meta_title'] = $getProductSingle->title;
             $data['meta_description'] = $getProductSingle->short_description;
 
@@ -83,6 +93,8 @@ class ProductController extends Controller
             
             $data['getSubCategory'] = $getSubCategory;
             $data['getCategory'] = $getCategory;
+            $data['getColor'] = ColorModel::getAvailableForProducts($getCategory->id, $getSubCategory->id);
+            $data['getBrand'] = BrandModel::getAvailableForProducts($getCategory->id, $getSubCategory->id);
 
             $getProduct = ProductModel::getProduct($getCategory->id, $getSubCategory->id);
 
@@ -110,6 +122,8 @@ class ProductController extends Controller
             $data['getSubCategoryFilter'] = SubCategoryModel::getRecordSubCategory($getCategory->id);
 
             $data['getCategory'] = $getCategory;
+            $data['getColor'] = ColorModel::getAvailableForProducts($getCategory->id);
+            $data['getBrand'] = BrandModel::getAvailableForProducts($getCategory->id);
 
             $data['meta_title'] = $getCategory->meta_title;
             $data['meta_description'] = $getCategory->meta_description;

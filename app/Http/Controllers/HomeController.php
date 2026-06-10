@@ -18,6 +18,7 @@ use App\Models\BlogModel;
 use App\Models\BlogCategoryModel;
 use App\Models\BlogCommentModel;
 use App\Models\HomeSettingModel;
+use App\Models\OrderItemModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -40,6 +41,30 @@ class HomeController extends Controller
         $data['getProduct'] = ProductModel::getRecentArrival();
 
         $data['getProductTrendy'] = ProductModel::getProductTrendy();
+        $recentIds = collect(Session::get('recently_viewed_products', []))->take(8)->all();
+        $data['recentlyViewedProducts'] = !empty($recentIds)
+            ? ProductModel::whereIn('id', $recentIds)->where('is_delete', 0)->where('status', 0)->get()->sortBy(function ($product) use ($recentIds) {
+                return array_search($product->id, $recentIds);
+            })
+            : collect();
+
+        $data['buyAgainProducts'] = collect();
+        if (Auth::check()) {
+            $buyAgainIds = OrderItemModel::select('orders_item.product_id')
+                ->join('orders', 'orders.id', '=', 'orders_item.order_id')
+                ->where('orders.user_id', Auth::id())
+                ->where('orders.is_payment', 1)
+                ->where('orders.is_delete', 0)
+                ->orderBy('orders.id', 'desc')
+                ->limit(8)
+                ->pluck('product_id')
+                ->unique()
+                ->all();
+
+            $data['buyAgainProducts'] = !empty($buyAgainIds)
+                ? ProductModel::whereIn('id', $buyAgainIds)->where('is_delete', 0)->where('status', 0)->get()
+                : collect();
+        }
 
         $data['meta_title'] = $getPage->meta_title ?? '';
         $data['meta_description'] = $getPage->meta_description ?? '';

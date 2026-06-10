@@ -1,7 +1,35 @@
 @extends('layouts.app')
 
 @section('style')
- 
+<style>
+	.checkout-steps {
+		display: flex;
+		gap: .75rem;
+		margin-bottom: 2rem;
+	}
+
+	.checkout-step {
+		flex: 1;
+		border: 1px solid #eeeeee;
+		border-radius: 8px;
+		padding: .85rem 1rem;
+		background: #fff;
+		color: #777;
+	}
+
+	.checkout-step.active {
+		border-color: #222;
+		color: #222;
+	}
+
+	.cart-empty-panel {
+		border: 1px solid #eeeeee;
+		border-radius: 8px;
+		padding: 3rem 1rem;
+		text-align: center;
+		background: #fff;
+	}
+</style>
 @endsection
 
 @section('content')
@@ -34,6 +62,11 @@
 					@endif
 
                         @if(!empty(Cart::getContent()->count()))
+						<div class="checkout-steps">
+							<div class="checkout-step active"><strong>Cart</strong><br><small>Review your picks</small></div>
+							<div class="checkout-step"><strong>Details</strong><br><small>Delivery information</small></div>
+							<div class="checkout-step"><strong>Payment</strong><br><small>Confirm order</small></div>
+						</div>
 	                	<div class="row">
 	                		<div class="col-lg-9">
 								<form action="{{ url('update_cart') }}" method="post">
@@ -64,7 +97,10 @@
 														<div class="product">
 															<figure class="product-media">
 																<a href="#">
-																	<img src="{{ $getProductImage->get_image() }}" alt="Product image">
+																	@php
+																		$cartImage = App\Models\ProductModel::getImageForColor($getCartProduct->id, $cart->attributes->color_id ?? null);
+																	@endphp
+																	<img src="{{ !empty($cartImage) ? $cartImage->get_image() : $getProductImage->get_image() }}" alt="Product image">
 																</a>
 															</figure>
 
@@ -121,7 +157,8 @@
 	                		</div><!-- End .col-lg-9 -->
 	                		<aside class="col-lg-3">
 	                			<div class="summary summary-cart">
-	                				<h3 class="summary-title">Cart Total</h3><!-- End .summary-title -->
+	                				<h3 class="summary-title">Ready when you are</h3><!-- End .summary-title -->
+									<p class="mb-2">Your selected colors and sizes will be kept through checkout.</p>
 
 	                				<table class="table table-summary">
 	                					<tbody>
@@ -137,14 +174,18 @@
 	                					</tbody>
 	                				</table><!-- End .table table-summary -->
 
-	                				<a href="{{ url('checkout') }}" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
+	                				<a href="{{ url('checkout') }}" class="btn btn-outline-primary-2 btn-order btn-block">Continue to details</a>
 	                			</div><!-- End .summary -->
 
 		            			<a href="{{ url('') }}" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
 	                		</aside><!-- End .col-lg-3 -->
 	                	</div><!-- End .row -->
                         @else
-                            <p>Cart is Empty!</p>
+							<div class="cart-empty-panel">
+								<h2>Your cart is waiting.</h2>
+								<p>Find something you like, choose your color and size, and it will appear here.</p>
+								<a href="{{ url('search') }}" class="btn btn-outline-primary-2"><span>Explore products</span><i class="icon-long-arrow-right"></i></a>
+							</div>
                         @endif
 	                </div><!-- End .container -->
                     

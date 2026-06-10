@@ -144,7 +144,7 @@
                                         <label><i class="fas fa-percentage"></i> Discount Code: <span>{{ $getRecord->discount_code }}</span></label>
                                     </div>
                                     <div class="form-group">
-                                        <label><i class="fas fa-plane"></i> Shipping Name: <span>{{ $getRecord->getShipping->name }}</span></label>
+                                        <label><i class="fas fa-plane"></i> Shipping Name: <span>{{ optional($getRecord->getShipping)->name ?? 'Not selected' }}</span></label>
                                     </div>
 
                                     <div class="form-group">

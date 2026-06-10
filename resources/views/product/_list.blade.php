@@ -3,16 +3,20 @@
 
         @foreach($getProduct as $value)
         @php
-        $getProductImage = $value->getImageSingle($value->id);
+            $getProductImage = $value->getImageSingle($value->id);
+            $productImages = $value->getImage;
+            $categorySlug = $value->category_slug ?? optional($value->getCategory)->slug;
+            $subCategorySlug = $value->sub_category_slug ?? optional($value->getSubCategory)->slug;
+            $subCategoryName = $value->sub_category_name ?? optional($value->getSubCategory)->name;
         @endphp
 
 
         <div class="col-12 @if(!empty($is_home)) col-md-3 col-lg-3 @else col-md-4 col-lg-4 @endif">
-            <div class="product product-7 text-center">
+            <div class="product product-7 text-center product-card-soft">
                 <figure class="product-media">
                     <a href="{{ url($value->slug) }}">
                         @if(!empty($getProductImage) && !empty($getProductImage->get_image()))
-                        <img style="height: 280px; width: 100%; object-fit:cover;" src="{{ $getProductImage->get_image() }}" alt="{{ $value->title }}" class="product-image">
+                        <img style="height: 280px; width: 100%; object-fit:cover;" src="{{ $getProductImage->get_image() }}" alt="{{ $value->title }}" class="product-image product-card-image">
                         @endif
                     </a>
 
@@ -32,9 +36,30 @@
 
                 <div class="product-body">
                     <div class="product-cat">
-                        <a href="{{ url($value->category_slug.'/'.$value->sub_category_slug) }}">{{ $value->sub_category_name }}</a>
+                        <a href="{{ url($categorySlug.'/'.$subCategorySlug) }}">{{ $subCategoryName }}</a>
                     </div><!-- End .product-cat -->
                     <h3 class="product-title"><a href="{{ url($value->slug) }}">{{ $value->title }}</a></h3><!-- End .product-title -->
+                    @if(!empty($value->getColor->count()))
+                    <div class="product-card-swatches" aria-label="Available colors">
+                        @foreach($value->getColor as $pcolor)
+                            @php
+                                $swatchImage = null;
+                                foreach($productImages as $image) {
+                                    if(in_array($pcolor->color_id, $image->colorIds()) && !empty($image->get_image())) {
+                                        $swatchImage = $image->get_image();
+                                        break;
+                                    }
+                                }
+                                if(empty($swatchImage) && !empty($getProductImage)) {
+                                    $swatchImage = $getProductImage->get_image();
+                                }
+                            @endphp
+                            <button type="button" class="product-card-swatch" data-image="{{ $swatchImage }}" style="background: {{ $pcolor->getColor->code }};" title="{{ $pcolor->getColor->name }}">
+                                <span class="sr-only">{{ $pcolor->getColor->name }}</span>
+                            </button>
+                        @endforeach
+                    </div>
+                    @endif
                     <div class="product-price">
                         ${{ number_format($value->price, 2) }}
                     </div>
@@ -52,6 +77,14 @@
                         </div><!-- End .ratings -->
                         <span class="ratings-text">( {{ $value->getTotalReview() }} Reviews )</span>
                     </div><!-- End .rating-container -->
+
+                    <div class="product-card-note">
+                        @if(!empty($value->in_stock))
+                            In stock • Fast checkout
+                        @else
+                            Availability on request
+                        @endif
+                    </div>
 
                 </div><!-- End .product-body -->
             </div><!-- End .product -->

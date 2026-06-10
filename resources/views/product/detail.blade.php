@@ -2,6 +2,62 @@
 
 @section('style')
 <link rel="stylesheet" href="{{ url('assets/css/plugins/nouislider/nouislider.css') }}">
+<style>
+    .product-buy-panel {
+        border: 1px solid #eeeeee;
+        border-radius: 8px;
+        padding: 2rem;
+        background: #fff;
+    }
+
+    .product-proof-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .75rem;
+        margin: 1.25rem 0;
+    }
+
+    .product-proof-item {
+        border: 1px solid #eeeeee;
+        border-radius: 8px;
+        padding: .85rem;
+        font-size: 13px;
+        color: #555;
+    }
+
+    .product-proof-item strong {
+        display: block;
+        color: #222;
+        font-size: 14px;
+        margin-bottom: .15rem;
+    }
+
+    .variant-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    @media (max-width: 767px) {
+        .product-buy-panel {
+            padding: 1.25rem;
+        }
+
+        .product-proof-row {
+            grid-template-columns: 1fr;
+        }
+
+        .product-details-action {
+            position: sticky;
+            bottom: 0;
+            z-index: 5;
+            background: #fff;
+            padding: 1rem 0;
+            border-top: 1px solid #eeeeee;
+        }
+    }
+</style>
 @endsection
 
 @section('content')
@@ -42,7 +98,7 @@
 
                             <div id="product-zoom-gallery" class="product-image-gallery">
                                 @foreach($getProduct->getImage as $image)
-                                <a class="product-gallery-item" style="width: 124px; height: 134px; margin-right: -70px;" href="#" data-image="{{ $image-> get_image() }}" data-zoom-image="{{ $image-> get_image() }}">
+                                <a class="product-gallery-item" style="width: 124px; height: 134px; margin-right: -70px;" href="#" data-colors="{{ implode(',', $image->colorIds()) }}" data-image="{{ $image-> get_image() }}" data-zoom-image="{{ $image-> get_image() }}">
                                     <img src="{{ $image-> get_image() }}" style="width: 120px; height: 130px; border-radius:20px;" alt="product side">
                                 </a>
                                 @endforeach
@@ -52,7 +108,7 @@
 
                     <div class="col-md-6">
                         @include('admin.layouts._message')
-                        <div class="product-details">
+                        <div class="product-details product-buy-panel">
                             <h1 class="product-title">{{ $getProduct->title }}</h1><!-- End .product-title -->
 
                             <div class="ratings-container">
@@ -72,14 +128,29 @@
                                 <p>{{ $getProduct->short_description }}</p>
                             </div><!-- End .product-content -->
 
+                            <div class="product-proof-row">
+                                <div class="product-proof-item">
+                                    <strong>{{ !empty($getProduct->in_stock) ? $getProduct->in_stock.' in stock' : 'Check stock' }}</strong>
+                                    Ready for your selected options
+                                </div>
+                                <div class="product-proof-item">
+                                    <strong>Easy returns</strong>
+                                    Clear support after purchase
+                                </div>
+                                <div class="product-proof-item">
+                                    <strong>Secure checkout</strong>
+                                    Your order details stay protected
+                                </div>
+                            </div>
+
                             <form action="{{ url('product/add-to-cart') }}" method="post">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="product_id" value="{{ $getProduct->id}}">
                                 @if(!empty($getProduct->getColor->count()))
                                 <div class="details-filter-row details-row-size">
-                                    <label for="color">Color:</label>
+                                    <label for="color" class="variant-label"><span>Color</span><small>Image updates when available</small></label>
                                     <div class="select-custom">
-                                        <select name="color" id="color" required class="form-control">
+                                        <select name="color_id" id="color" required class="form-control">
                                             <option value="">Select a Color</option>
                                             @foreach($getProduct->getColor as $color)
                                             <option value="{{ $color->getColor->id }}">{{ $color->getColor->name }}</option>
@@ -92,7 +163,7 @@
 
                                 @if(!empty($getProduct->getSize->count()))
                                 <div class="details-filter-row details-row-size">
-                                    <label for="size">Size:</label>
+                                    <label for="size" class="variant-label"><span>Size</span><small>Choose your fit</small></label>
                                     <div class="select-custom">
                                         <select name="size_id" id="size" required class="form-control getSizePrice">
                                             <option data-price="0" value="">Select a Size</option>
@@ -112,7 +183,7 @@
                                 @endif
 
                                 <div class="details-filter-row details-row-size">
-                                    <label for="qty">Qty:</label>
+                                    <label for="qty">Quantity</label>
                                     <div class="product-details-quantity">
                                         <input type="number" id="qty" class="form-control" value="1" min="1" max="100" name="qty" required step="1" data-decimals="0" required>
                                     </div><!-- End .product-details-quantity -->
@@ -134,7 +205,7 @@
 
                             <div class="product-details-footer">
                                 <div class="product-cat">
-                                    <span>Category:</span>
+                                    <span>Explore:</span>
                                     <a href="{{ url($getProduct-> getCategory->slug) }}">{{ $getProduct-> getCategory->name }}</a>,
                                     <a href="{{ url($getProduct-> getCategory->slug.'/'.$getProduct-> getSubCategory->slug) }}">{{ $getProduct-> getSubCategory->name }}</a>
                                 </div><!-- End .product-cat -->
@@ -157,16 +228,16 @@
             <div class="container-fluid">
                 <ul class="nav nav-pills justify-content-center" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Description</a>
+                        <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Why you'll like it</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="product-info-link" data-toggle="tab" href="#product-info-tab" role="tab" aria-controls="product-info-tab" aria-selected="false">Additional information</a>
+                        <a class="nav-link" id="product-info-link" data-toggle="tab" href="#product-info-tab" role="tab" aria-controls="product-info-tab" aria-selected="false">Fit & feel</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="product-shipping-link" data-toggle="tab" href="#product-shipping-tab" role="tab" aria-controls="product-shipping-tab" aria-selected="false">Shipping & Returns</a>
+                        <a class="nav-link" id="product-shipping-link" data-toggle="tab" href="#product-shipping-tab" role="tab" aria-controls="product-shipping-tab" aria-selected="false">Delivery & returns</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab" role="tab" aria-controls="product-review-tab" aria-selected="false">Reviews ({{ $getProduct->getTotalReview() }})</a>
+                        <a class="nav-link" id="product-review-link" data-toggle="tab" href="#product-review-tab" role="tab" aria-controls="product-review-tab" aria-selected="false">What customers say ({{ $getProduct->getTotalReview() }})</a>
                     </li>
                 </ul>
             </div><!-- End .container -->
@@ -333,6 +404,29 @@
         var price = $('option:selected', this).attr('data-price');
         var total = parseFloat(product_price) + parseFloat(price);
         $('#getTotalPrice').html(total.toFixed(2));
+    });
+
+    $('#color').change(function() {
+        var colorId = $(this).val();
+
+        if(!colorId) {
+            return;
+        }
+
+        var matchedImage = $('.product-gallery-item').filter(function() {
+            var colors = ($(this).data('colors') || '').toString().split(',');
+            return colors.indexOf(colorId) !== -1;
+        }).first();
+
+        if(matchedImage.length) {
+            var image = matchedImage.data('image');
+            $('#product-zoom')
+                .attr('src', image)
+                .attr('data-zoom-image', image);
+
+            $('.product-gallery-item').removeClass('active');
+            matchedImage.addClass('active');
+        }
     });
 </script>
 

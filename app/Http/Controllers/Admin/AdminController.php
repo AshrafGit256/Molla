@@ -29,14 +29,17 @@ class AdminController extends Controller
     public function insert(Request $request)
     {
         request()->validate([
-            'email'=>'required|email|unique:users'
+            'name' => 'required|string|max:255',
+            'email'=>'required|email|unique:users',
+            'password' => 'required|string|min:6',
+            'image_name' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
         
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-        $user->status = 0;
+        $user->status = $request->status;
         $user->is_admin = 1; 
 
         if(!empty($request->file('image_name')))

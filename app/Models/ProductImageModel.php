@@ -27,4 +27,14 @@ class ProductImageModel extends Model
             return "";
         }
     }
+
+    public function getColor()
+    {
+        return $this->hasMany(ProductImageColorModel::class, 'product_image_id');
+    }
+
+    public function colorIds()
+    {
+        return $this->getColor->pluck('color_id')->toArray();
+    }
 }

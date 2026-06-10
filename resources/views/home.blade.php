@@ -138,6 +138,28 @@
 
     <div class="mb-6"></div><!-- End .mb-6 -->
 
+    @if(!empty($buyAgainProducts) && $buyAgainProducts->count())
+    <div class="container-fluid">
+        <div class="heading heading-left mb-3">
+            <h2 class="title">Buy again</h2>
+            <p class="mb-0">Items you have ordered before, ready when you are.</p>
+        </div>
+        @include('product._list', ['getProduct' => $buyAgainProducts, 'is_home' => 1])
+    </div>
+    <div class="mb-4"></div>
+    @endif
+
+    @if(!empty($recentlyViewedProducts) && $recentlyViewedProducts->count())
+    <div class="container-fluid">
+        <div class="heading heading-left mb-3">
+            <h2 class="title">Continue where you left off</h2>
+            <p class="mb-0">Recently viewed products, kept close for your next visit.</p>
+        </div>
+        @include('product._list', ['getProduct' => $recentlyViewedProducts, 'is_home' => 1])
+    </div>
+    <div class="mb-4"></div>
+    @endif
+
     @if(!empty($getProductTrendy->count()))
     <div class="container-fluid">
         <div class="heading heading-center mb-3">

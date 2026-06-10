@@ -13,6 +13,7 @@ use App\Models\SubCategoryModel;
 use App\Models\ProductColorModel;
 use App\Models\ProductSizeModel;
 use App\Models\ProductImageModel;
+use App\Models\ProductImageColorModel;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -135,7 +136,7 @@ class ProductController extends Controller
 
             if(!empty($request->file('image')))
             {
-                foreach($request->file('image') as $value)
+                foreach($request->file('image') as $key => $value)
                 {
                     if($value->isValid())
                     {
@@ -149,6 +150,41 @@ class ProductController extends Controller
                         $imageupload -> image_extension = $ext;
                         $imageupload -> product_id = $product_id;
                         $imageupload -> save();
+
+                        if(!empty($request->image_colors[$key]))
+                        {
+                            foreach($request->image_colors[$key] as $color_id)
+                            {
+                                if(empty($color_id)) {
+                                    continue;
+                                }
+
+                                $imageColor = new ProductImageColorModel;
+                                $imageColor->product_image_id = $imageupload->id;
+                                $imageColor->color_id = $color_id;
+                                $imageColor->save();
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(!empty($request->existing_image_colors))
+            {
+                foreach($request->existing_image_colors as $image_id => $color_ids)
+                {
+                    ProductImageColorModel::where('product_image_id', $image_id)->delete();
+
+                    foreach($color_ids as $color_id)
+                    {
+                        if(empty($color_id)) {
+                            continue;
+                        }
+
+                        $imageColor = new ProductImageColorModel;
+                        $imageColor->product_image_id = $image_id;
+                        $imageColor->color_id = $color_id;
+                        $imageColor->save();
                     }
                 }
             }

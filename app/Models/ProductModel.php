@@ -211,6 +211,24 @@ class ProductModel extends Model
                                 ->first();
     }
 
+    public static function getImageForColor($product_id, $color_id = null)
+    {
+        if (!empty($color_id)) {
+            $image = ProductImageModel::select('product_image.*')
+                ->join('product_image_color', 'product_image_color.product_image_id', '=', 'product_image.id')
+                ->where('product_image.product_id', '=', $product_id)
+                ->where('product_image_color.color_id', '=', $color_id)
+                ->orderBy('product_image.order_by', 'asc')
+                ->first();
+
+            if (!empty($image)) {
+                return $image;
+            }
+        }
+
+        return self::getImageSingle($product_id);
+    }
+
     // Check if a slug exists
     public static function getSingleSlug($slug)
     {

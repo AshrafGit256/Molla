@@ -1,6 +1,33 @@
 @extends('admin.layouts.app')
 
 @section('style')
+<style>
+  .work-card {
+    min-height: 260px;
+  }
+
+  .work-list-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .75rem 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  .work-list-item:last-child {
+    border-bottom: 0;
+  }
+
+  .work-list-title {
+    font-weight: 600;
+    margin-bottom: .15rem;
+  }
+
+  .work-list-meta {
+    color: #b9c0c7;
+    font-size: 12px;
+  }
+</style>
 @endsection
 
   @section('content')
@@ -88,6 +115,103 @@
 
 
           
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3 col-md-6">
+            <div class="card work-card">
+              <div class="card-header border-0">
+                <h3 class="card-title"><i class="fas fa-bolt mr-2"></i>Needs Action</h3>
+              </div>
+              <div class="card-body">
+                <div class="work-list-item">
+                  <div>
+                    <div class="work-list-title">Pending orders</div>
+                    <div class="work-list-meta">Orders waiting for progress</div>
+                  </div>
+                  <span class="badge badge-warning align-self-start">{{ $pendingOrders->count() }}</span>
+                </div>
+                <div class="work-list-item">
+                  <div>
+                    <div class="work-list-title">Low stock</div>
+                    <div class="work-list-meta">Products at 10 units or less</div>
+                  </div>
+                  <span class="badge badge-danger align-self-start">{{ $lowStockProducts->count() }}</span>
+                </div>
+                <div class="work-list-item">
+                  <div>
+                    <div class="work-list-title">Missing images</div>
+                    <div class="work-list-meta">Products that need photos</div>
+                  </div>
+                  <span class="badge badge-info align-self-start">{{ $missingImageProducts->count() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="card work-card">
+              <div class="card-header border-0 d-flex justify-content-between align-items-center">
+                <h3 class="card-title"><i class="fas fa-clipboard-list mr-2"></i>Pending Orders</h3>
+                <a href="{{ url('admin/order/list') }}" class="btn btn-sm btn-outline-light">View all</a>
+              </div>
+              <div class="card-body">
+                @forelse($pendingOrders as $order)
+                  <div class="work-list-item">
+                    <div>
+                      <div class="work-list-title">#{{ $order->order_number }}</div>
+                      <div class="work-list-meta">{{ $order->first_name }} {{ $order->last_name }} • ${{ number_format($order->total_amount, 2) }}</div>
+                    </div>
+                    <a href="{{ url('admin/order/detail/'.$order->id) }}" class="btn btn-sm btn-success align-self-start">Open</a>
+                  </div>
+                @empty
+                  <p class="text-muted mb-0">No pending orders right now.</p>
+                @endforelse
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="card work-card">
+              <div class="card-header border-0">
+                <h3 class="card-title"><i class="fas fa-box-open mr-2"></i>Inventory Watch</h3>
+              </div>
+              <div class="card-body">
+                @forelse($lowStockProducts as $product)
+                  <div class="work-list-item">
+                    <div>
+                      <div class="work-list-title">{{ $product->title }}</div>
+                      <div class="work-list-meta">{{ $product->in_stock }} units left</div>
+                    </div>
+                    <a href="{{ url('admin/product/edit/'.$product->id) }}" class="btn btn-sm btn-outline-warning align-self-start">Edit</a>
+                  </div>
+                @empty
+                  <p class="text-muted mb-0">Inventory looks healthy.</p>
+                @endforelse
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="card work-card">
+              <div class="card-header border-0">
+                <h3 class="card-title"><i class="fas fa-user-plus mr-2"></i>New Customers</h3>
+              </div>
+              <div class="card-body">
+                @forelse($recentCustomers as $customer)
+                  <div class="work-list-item">
+                    <div>
+                      <div class="work-list-title">{{ $customer->name }}</div>
+                      <div class="work-list-meta">{{ $customer->email }}</div>
+                    </div>
+                    <span class="badge badge-secondary align-self-start">{{ date('M d', strtotime($customer->created_at)) }}</span>
+                  </div>
+                @empty
+                  <p class="text-muted mb-0">No customers yet.</p>
+                @endforelse
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="row">

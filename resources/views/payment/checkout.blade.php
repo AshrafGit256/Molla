@@ -1,7 +1,48 @@
 @extends('layouts.app')
 
 @section('style')
- 
+<style>
+	.checkout-steps {
+		display: flex;
+		gap: .75rem;
+		margin-bottom: 2rem;
+	}
+
+	.checkout-step {
+		flex: 1;
+		border: 1px solid #eeeeee;
+		border-radius: 8px;
+		padding: .85rem 1rem;
+		background: #fff;
+		color: #777;
+	}
+
+	.checkout-step.active {
+		border-color: #222;
+		color: #222;
+	}
+
+	.checkout-comfort {
+		border: 1px solid #eeeeee;
+		border-radius: 8px;
+		padding: 1rem;
+		margin-bottom: 1.5rem;
+		background: #fff;
+	}
+
+	.checkout-order-item {
+		display: flex;
+		gap: .75rem;
+		align-items: center;
+	}
+
+	.checkout-order-item img {
+		width: 46px;
+		height: 46px;
+		object-fit: cover;
+		border-radius: 8px;
+	}
+</style>
 @endsection
 
 @section('content')
@@ -27,9 +68,18 @@
 	                <div class="container-fluid">
             			<form action="" id="SubmitForm" method="post">
 							{{ csrf_field() }}
+							<div class="checkout-steps">
+								<div class="checkout-step"><strong>Cart</strong><br><small>Reviewed</small></div>
+								<div class="checkout-step active"><strong>Details</strong><br><small>Delivery information</small></div>
+								<div class="checkout-step"><strong>Payment</strong><br><small>Confirm order</small></div>
+							</div>
 		                	<div class="row">
 		                		<div class="col-lg-9">
-		                			<h2 class="checkout-title">Billing Details</h2><!-- End .checkout-title -->
+									<div class="checkout-comfort">
+										<strong>Almost there.</strong>
+										<span>We will use these details to deliver your order and send updates.</span>
+									</div>
+		                			<h2 class="checkout-title">Delivery details</h2><!-- End .checkout-title -->
 		                				<div class="row">
 		                					<div class="col-sm-6">
 		                						<label>First Name *</label>
@@ -112,9 +162,20 @@
 											@foreach(Cart::getContent() as $key => $cart)
 												@php
 													$getCartProduct = App\Models\ProductModel::getSingle($cart->id);
+													$cartImage = App\Models\ProductModel::getImageForColor($getCartProduct->id, $cart->attributes->color_id ?? null);
 												@endphp
 		                						<tr>
-		                							<td><a href="{{ url($getCartProduct->slug) }}">{{ $getCartProduct ->title }}</a></td>
+		                							<td>
+														<div class="checkout-order-item">
+															@if(!empty($cartImage) && !empty($cartImage->get_image()))
+																<img src="{{ $cartImage->get_image() }}" alt="{{ $getCartProduct->title }}">
+															@endif
+															<div>
+																<a href="{{ url($getCartProduct->slug) }}">{{ $getCartProduct ->title }}</a>
+																<div><small>Qty: {{ $cart->quantity }}</small></div>
+															</div>
+														</div>
+													</td>
 		                							<td>${{ number_format($cart->price), 2 }}</td>
 		                						</tr>
 											@endforeach
@@ -205,6 +266,7 @@
 										    
 										</div><!-- End .accordion -->
 
+										<p class="text-center mb-1"><small>Secure checkout. You can review before payment is completed.</small></p>
 		                				<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
 		                					<span class="btn-text">Place Order</span>
 		                					<span class="btn-hover-text">Proceed to Checkout</span>

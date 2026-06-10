@@ -254,16 +254,18 @@
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>Image<span style="color: red;"></span></label>
-                        <input type="file" name="image[]" class="form-control" style="padding: 4px;" multiple accept="image/*">
+                        <input type="file" name="image[]" id="ProductImages" class="form-control" style="padding: 4px;" multiple accept="image/*">
                     </div>
                 </div>
             </div>
+
+            <div class="row" id="ImagePreview"></div>
 
             @if(!empty($product->getImage->count()))
                 <div class="row" id="sortable">
                     @foreach($product->getImage as $image)
                       @if(!empty($image->get_image()))
-                        <div class="col-md-1 sortable_image" id="{{ url( $image->id ) }}" style="text-align: center;">
+                        <div class="col-md-2 sortable_image mb-3" id="{{ $image->id }}" style="text-align: center;">
 
                         <img style="
                             width: 100px; 
@@ -275,6 +277,19 @@
                             object-fit: cover;" 
                             src="{{ $image->get_image() }}" 
                             alt="Image">
+
+                            <input type="hidden" name="existing_image_colors[{{ $image->id }}][]" value="">
+                            <div class="mt-2 text-left" style="font-size: 12px;">
+                                @foreach($product->getColor as $pcolor)
+                                    @php
+                                        $imageColorIds = $image->colorIds();
+                                    @endphp
+                                    <label style="display:block; margin-bottom: 2px;">
+                                        <input type="checkbox" name="existing_image_colors[{{ $image->id }}][]" value="{{ $pcolor->getColor->id }}" {{ in_array($pcolor->getColor->id, $imageColorIds) ? 'checked' : '' }}>
+                                        {{ $pcolor->getColor->name }}
+                                    </label>
+                                @endforeach
+                            </div>
 
                             <a href="{{ url('admin/product/image_delete/'.$image->id) }}" style="margin-top:10px;" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Delete</a>
                         </div>
@@ -398,6 +413,43 @@
 
         $('.editor').summernote({
             height: 200
+        });
+
+        $('#ProductImages').on('change', function() {
+            $('#ImagePreview').html('');
+
+            Array.from(this.files).forEach(function(file, index) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    var colorOptions = '';
+                    var selectedColors = $('input[name="color_id[]"]:checked');
+
+                    if(selectedColors.length == 0) {
+                        selectedColors = $('input[name="color_id[]"]');
+                    }
+
+                    selectedColors.each(function() {
+                        var colorName = $(this).closest('label').text().trim();
+                        colorOptions += `
+                            <label style="display:block; margin-bottom: 2px;">
+                                <input type="checkbox" name="image_colors[${index}][]" value="${$(this).val()}">
+                                ${colorName}
+                            </label>`;
+                    });
+
+                    $('#ImagePreview').append(`
+                        <div class="col-md-2 mb-3" style="text-align:center;">
+                            <img src="${e.target.result}" style="width:100px; height:100px; border-radius:50%; object-fit:cover;">
+                            <div class="mt-2 text-left" style="font-size: 12px;">
+                                ${colorOptions}
+                            </div>
+                        </div>
+                    `);
+                };
+
+                reader.readAsDataURL(file);
+            });
         });
 
         $(document).ready(function(){
