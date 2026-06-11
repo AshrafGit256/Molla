@@ -169,7 +169,6 @@ class PaymentController extends Controller
     $message = '';
     $user_id = null; 
 
-    // Check if the user already exists
     $existingUser = User::where('email', $request->email)->first();
 
     if ($existingUser) {
@@ -177,7 +176,6 @@ class PaymentController extends Controller
     } 
     else if ($request->is_create) 
     {
-        // Create a new user if not found
         $save = new User;
         $save->name = trim($request->first_name) . ' ' . trim($request->last_name);
         $save->email = trim($request->email);
@@ -187,7 +185,6 @@ class PaymentController extends Controller
         $user_id = $save->id;
     }
 
-    // Validate that user_id exists
     if (!$user_id) {
         return response()->json([
             'status' => false,
@@ -195,7 +192,6 @@ class PaymentController extends Controller
         ]);
     }
 
-    // Create Order
     $order = new OrderModel;
     $order->user_id = $user_id;
 
@@ -223,7 +219,6 @@ class PaymentController extends Controller
     $shipping_amount = !empty($deliveryEstimate) ? $deliveryEstimate['fee'] : (!empty($getShipping->price) ? $getShipping->price : 0);
     $total_amount = $payable_total + $shipping_amount;
 
-    // Fill order details
     $order->order_number = mt_rand(100000000, 999999999);
     $order->first_name = trim($request->first_name);
     $order->last_name = trim($request->last_name);
@@ -248,15 +243,20 @@ class PaymentController extends Controller
     $order->delivery_duration_minutes = !empty($deliveryEstimate) ? $deliveryEstimate['duration_minutes'] : null;
     $order->total_amount = trim($total_amount);
     $order->payment_method = trim($request->payment_method);
+    $order->status = 0;
     $order->save();
 
-    // Save order items
     foreach (Cart::getContent() as $cart) {
         $order_item = new OrderItemModel;
         $order_item->order_id = $order->id;
         $order_item->product_id = $cart->id;
         $order_item->quantity = $cart->quantity;
         $order_item->price = $cart->price;
+
+        $getProduct = ProductModel::getSingle($cart->id);
+        if (!empty($getProduct) && !empty($getProduct->cost_price)) {
+            $order_item->cost_price = $getProduct->cost_price;
+        }
 
         if (!empty($cart->attributes->color_id)) {
             $getColor = ColorModel::getSingle($cart->attributes->color_id);

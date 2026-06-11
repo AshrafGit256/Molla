@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\TimelineController;
+use App\Http\Controllers\Admin\PaymentIconController;
 
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
@@ -202,6 +203,14 @@ Route::post('admin/partner/add', [PartnerController::class, 'insert']);
 Route::get('admin/partner/edit/{id}', [PartnerController::class, 'edit']);
 Route::post('admin/partner/edit/{id}', [PartnerController::class, 'update']);
 Route::get('admin/partner/delete/{id}', [PartnerController::class, 'delete']);
+
+Route::get('admin/payment-icon/list', [PaymentIconController::class, 'list']);
+Route::get('admin/payment-icon/add', [PaymentIconController::class, 'add']);
+Route::post('admin/payment-icon/add', [PaymentIconController::class, 'insert']);
+Route::get('admin/payment-icon/edit/{id}', [PaymentIconController::class, 'edit']);
+Route::post('admin/payment-icon/edit/{id}', [PaymentIconController::class, 'update']);
+Route::get('admin/payment-icon/delete/{id}', [PaymentIconController::class, 'delete']);
+Route::post('admin/payment-icon/sort', [PaymentIconController::class, 'sort']);
 
 // Test Email Route
 Route::get('/test-email', function () {

@@ -130,6 +130,50 @@
     </div>
 </div>
 
+<div class="col-12 col-md-2">
+    <div class="info-box mb-3">
+        <span class="info-box-icon bg-navy elevation-1"><i class="fas fa-hand-holding-usd"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Total Profit</span>
+            <span class="info-box-number">{{ App\Support\Money::format($TotalProfit) }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="col-12 col-md-2">
+    <div class="info-box mb-3">
+        <span class="info-box-icon bg-maroon elevation-1"><i class="fas fa-calendar-check"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Today Profit</span>
+            <span class="info-box-number">{{ App\Support\Money::format($TodayProfit) }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="col-12 col-md-2">
+    <form action="{{ url('admin/dashboard') }}" method="GET" class="info-box mb-3" style="cursor: pointer;" onclick="this.submit()">
+        <span class="info-box-icon bg-teal elevation-1"><i class="fas fa-chart-line"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">Week Profit</span>
+            <span class="info-box-number">{{ App\Support\Money::format($weekProfit) }}</span>
+            <input type="hidden" name="profit_from" value="{{ date('Y-m-d', strtotime('monday this week')) }}">
+            <input type="hidden" name="profit_to" value="{{ date('Y-m-d', strtotime('sunday this week')) }}">
+        </div>
+    </form>
+</div>
+
+<div class="col-12 col-md-2">
+    <form action="{{ url('admin/dashboard') }}" method="GET" class="info-box mb-3" style="cursor: pointer;" onclick="this.submit()">
+        <span class="info-box-icon bg-olive elevation-1"><i class="fas fa-calendar-alt"></i></span>
+        <div class="info-box-content">
+            <span class="info-box-text">This Month</span>
+            <span class="info-box-number">{{ App\Support\Money::format($profitRange) }}</span>
+            <input type="hidden" name="profit_from" value="{{ date('Y-m-01') }}">
+            <input type="hidden" name="profit_to" value="{{ date('Y-m-t') }}">
+        </div>
+    </form>
+</div>
+
 
 
 
@@ -353,6 +397,91 @@
               </div>
             </div>
             <!-- /.card -->
+
+            <div class="card">
+              <div class="card-header border-0 d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Profit</h3>
+                <form action="{{ url('admin/dashboard') }}" method="GET" class="form-inline">
+                    <div class="input-group input-group-sm">
+                        <input type="date" name="profit_from" class="form-control" value="{{ $profitFrom }}">
+                        <span class="input-group-text">to</span>
+                        <input type="date" name="profit_to" class="form-control" value="{{ $profitTo }}">
+                        <button class="btn btn-primary" type="submit">Filter</button>
+                    </div>
+                </form>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ App\Support\Money::format($todayProfit) }}</span>
+                      <span class="work-list-meta">Today's Profit</span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ App\Support\Money::format($weekProfit) }}</span>
+                      <span class="work-list-meta">This Week's Profit</span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="ops-metric">
+                      <span class="ops-metric-value">{{ App\Support\Money::format($profitRange) }}</span>
+                      <span class="work-list-meta">Profit for Selected Period</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header border-0">
+                <h3 class="card-title"><b>Profit by Product</b></h3>
+              </div>
+              <div class="card-body table-responsive p-0">
+              <table class="table table-striped table-valign-middle">
+                  <thead>
+                    <tr class="bg-dark">
+                      <th>Product</th>
+                      <th>Qty Sold</th>
+                      <th>Revenue</th>
+                      <th>Cost</th>
+                      <th>Profit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  @forelse($productProfit as $product)
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        @php
+                          $imagePath = public_path('upload/product/'.($product->image_name ?? ''));
+                        @endphp
+                        @if(!empty($product->image_name) && file_exists($imagePath))
+                          <img src="{{ url('upload/product/'.$product->image_name) }}" width="50" class="mr-3">
+                        @else
+                          <img src="{{ url('upload/no-image.png') }}" width="50" class="mr-3">
+                        @endif
+                        <div>
+                          <strong>{{ $product->title }}</strong>
+                          <div class="text-muted small">#{{ $product->id }}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{{ $product->total_quantity }}</td>
+                    <td>{{ App\Support\Money::format($product->total_revenue) }}</td>
+                    <td>{{ App\Support\Money::format($product->total_cost) }}</td>
+                    <td><strong class="text-success">{{ App\Support\Money::format($product->total_profit) }}</strong></td>
+                  </tr>
+                  @empty
+                  <tr>
+                    <td colspan="5" class="text-center">No profit data for selected period.</td>
+                  </tr>
+                  @endforelse
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             <div class="card">
               <div class="card-header border-0">

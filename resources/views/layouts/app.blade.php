@@ -16,6 +16,7 @@
 
     @php
         $getSystemSettingApp = App\Models\SystemSettingModel::getSingle();
+        $getPaymentIcons = App\Models\PaymentIconModel::where('status', 0)->orderBy('order_by', 'asc')->get();
     @endphp
 
     

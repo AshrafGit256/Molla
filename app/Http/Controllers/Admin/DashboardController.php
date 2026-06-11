@@ -12,11 +12,12 @@ class DashboardController extends Controller
 {
     public function dashboard(Request $request)
     {
-        // Set the header title
         $data['TotalOrder'] = OrderModel::getTotalOrder();
         $data['TotalTodayOrder'] = OrderModel::getTotalTodayOrder();
         $data['TotalAmount'] = OrderModel::getTotalAmount();
         $data['TotalTodayAmount'] = OrderModel::getTotalTodayAmount();
+        $data['TotalProfit'] = OrderModel::getProfitTotal();
+        $data['TodayProfit'] = OrderModel::getProfitToday();
         $data['TotalCustomer'] = User::getTotalCustomer();
         $data['TotalTodayCustomer'] = User::getTotalTodayCustomer();
 
@@ -68,6 +69,53 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $request->validate([
+            'profit_from' => 'nullable|date',
+            'profit_to' => 'nullable|date|after_or_equal:profit_from',
+        ]);
+
+        $profitFrom = $request->input('profit_from') ?: null;
+        $profitTo = $request->input('profit_to') ?: null;
+
+        if (empty($profitFrom) && empty($profitTo)) {
+            $profitFrom = date('Y-m-01');
+            $profitTo = date('Y-m-t');
+        } elseif (empty($profitTo)) {
+            $profitTo = $profitFrom ?: date('Y-m-d');
+        }
+
+        if (empty($profitFrom)) {
+            $profitFrom = date('Y-m-01', strtotime($profitTo));
+        }
+
+        $data['profitFrom'] = $profitFrom;
+        $data['profitTo'] = $profitTo;
+        $data['profitRange'] = OrderModel::getProfitRange($profitFrom, $profitTo);
+        $data['weekProfit'] = OrderModel::getProfitRange(
+            date('Y-m-d', strtotime('monday this week')),
+            date('Y-m-d', strtotime('sunday this week'))
+        );
+        $data['todayProfit'] = OrderModel::getProfitToday();
+
+        $data['productProfit'] = ProductModel::select(
+                'product.id',
+                'product.title',
+                'product.image_name',
+                \DB::raw('SUM(orders_item.quantity) as total_quantity'),
+                \DB::raw('SUM(orders_item.price * orders_item.quantity) as total_revenue'),
+                \DB::raw('SUM(orders_item.cost_price * orders_item.quantity) as total_cost'),
+                \DB::raw('SUM((orders_item.price - orders_item.cost_price) * orders_item.quantity) as total_profit')
+            )
+            ->join('orders_item', 'product.id', '=', 'orders_item.product_id')
+            ->join('orders', 'orders.id', '=', 'orders_item.order_id')
+            ->where('orders.is_payment', 1)
+            ->where('orders.is_delete', 0)
+            ->whereDate('orders.created_at', '>=', $profitFrom)
+            ->whereDate('orders.created_at', '<=', $profitTo)
+            ->groupBy('product.id', 'product.title', 'product.image_name')
+            ->orderBy('total_profit', 'desc')
+            ->get();
+
         if(!empty($request->year))
         {
             $year = $request->year;
@@ -92,7 +140,6 @@ class DashboardController extends Controller
             $start_date = $startDate->format('Y-m-d');
             $end_date = $endDate->format('Y-m-d');
 
-            // Fetch the total customer count for the given month
             $customer = User::getTotalCustomerMonth($start_date, $end_date);
             $getTotalCustomerMonth .= $customer . ',';
 
@@ -115,7 +162,6 @@ class DashboardController extends Controller
 
         $data['header_title'] = "Dashboard";
         
-        // Pass the data to the view
         return view('admin.dashboard', $data);
     }
 }

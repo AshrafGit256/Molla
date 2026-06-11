@@ -104,6 +104,59 @@ class OrderModel extends Model
                 ->whereDate('created_at', '<=', $end_date)
                 ->sum('total_amount');
     }
+
+    static public function getProfitTotal()
+    {
+        return self::select(\DB::raw('SUM(orders_item.price - orders_item.cost_price) as profit'))
+            ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
+            ->where('is_payment', '=', 1)
+            ->where('is_delete', '=', 0)
+            ->first()->profit ?? 0;
+    }
+
+    static public function getProfitToday()
+    {
+        return self::select(\DB::raw('SUM(orders_item.price - orders_item.cost_price) as profit'))
+            ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
+            ->where('is_payment', '=', 1)
+            ->where('is_delete', '=', 0)
+            ->whereDate('orders.created_at', '=', date('Y-m-d'))
+            ->first()->profit ?? 0;
+    }
+
+    static public function getProfitRange($start_date, $end_date)
+    {
+        return self::select(\DB::raw('SUM(orders_item.price - orders_item.cost_price) as profit'))
+            ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
+            ->where('is_payment', '=', 1)
+            ->where('is_delete', '=', 0)
+            ->whereDate('orders.created_at', '>=', $start_date)
+            ->whereDate('orders.created_at', '<=', $end_date)
+            ->first()->profit ?? 0;
+    }
+
+    static public function getProductProfits($start_date = null, $end_date = null)
+    {
+        $query = self::select(
+            'orders_item.product_id',
+            \DB::raw('SUM(orders_item.quantity) as total_quantity'),
+            \DB::raw('SUM(orders_item.price) as total_revenue'),
+            \DB::raw('SUM(orders_item.cost_price * orders_item.quantity) as total_cost'),
+            \DB::raw('SUM(orders_item.price - orders_item.cost_price) as total_profit')
+        )
+        ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
+        ->where('is_payment', '=', 1)
+        ->where('is_delete', '=', 0)
+        ->groupBy('orders_item.product_id')
+        ->orderBy('total_profit', 'desc');
+
+        if (!empty($start_date) && !empty($end_date)) {
+            $query->whereDate('orders.created_at', '>=', $start_date)
+                  ->whereDate('orders.created_at', '<=', $end_date);
+        }
+
+        return $query->get();
+    }
     
     static public function getTotalAmount()
     {

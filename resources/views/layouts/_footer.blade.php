@@ -179,8 +179,10 @@
     <div class="footer-bottom">
         <div class="container-fluid">
             <p class="footer-copyright">Copyright © {{ date('Y') }} {{ $getSystemSettingApp->website_name }}. All Rights Reserved.</p>
-            <figure class="footer-payments">
-                <img src="{{ $getSystemSettingApp->getFooterPaymentIcon() }}" alt="Payment methods">
+            <figure class="footer-payments d-flex align-items-center justify-content-center flex-wrap" style="gap: 12px; margin-top: 8px;">
+                @foreach($getPaymentIcons as $icon)
+                    <img src="{{ $icon->getImage() }}" alt="Payment method" loading="lazy">
+                @endforeach
             </figure>
         </div>
     </div><!-- End .footer-bottom -->
