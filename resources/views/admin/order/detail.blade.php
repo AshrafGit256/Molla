@@ -227,9 +227,26 @@
                                 <label><i class="fas fa-money-bill-wave"></i> Discount Amount: <span>{{ App\Support\Money::format($getRecord->discount_amount) }}</span></label>
                             </div>
 
-                           
-
-                            
+                            <div class="form-group">
+                                <label><i class="fas fa-motorcycle"></i> Rider:
+                                    @if(!empty($getRecord->rider_name))
+                                        <span class="text-success"><strong>{{ $getRecord->rider_name }}</strong></span>
+                                    @else
+                                        <span class="text-muted">Not assigned</span>
+                                    @endif
+                                </label>
+                                <select class="form-control mt-2" id="AssignRider" data-order-id="{{ $getRecord->id }}">
+                                    <option value="">-- Select Rider --</option>
+                                    @foreach($getRiderList as $rider)
+                                        <option value="{{ $rider->id }}" {{ $getRecord->rider_id == $rider->id ? 'selected' : '' }}>
+                                            {{ $rider->name }} ({{ $rider->email }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button type="button" class="btn btn-primary btn-sm mt-2" id="SaveRiderAssignment">
+                                    <i class="fas fa-save"></i> Save Rider
+                                </button>
+                            </div>
 
                         </div>
                     </div>
@@ -302,6 +319,22 @@
 <script>
     $(function() {
         $('[data-toggle="tooltip"]').tooltip(); // Initialize tooltips
+    });
+
+    $('#SaveRiderAssignment').click(function() {
+        var orderId = $('#AssignRider').data('order-id');
+        var riderId = $('#AssignRider').val();
+
+        $.post('{{ url('admin/order/assign-rider') }}', {
+            order_id: orderId,
+            rider_id: riderId,
+            _token: '{{ csrf_token() }}'
+        }, function(res) {
+            alert(res.message);
+            if (res.status) {
+                location.reload();
+            }
+        }, 'json');
     });
 </script>
 @endsection

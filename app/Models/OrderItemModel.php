@@ -19,18 +19,14 @@ class OrderItemModel extends Model
 
     public function getCostPrice()
     {
-        if (!empty($this->cost_price)) {
-            return (float) $this->cost_price;
-        }
-
         $product = $this->getProduct;
 
-        return !empty($product) ? (float) ($product->cost_price ?? 0) : 0;
+        return !empty($product) ? (float) ($product->bought_at ?? 0) : 0;
     }
 
     public function getProfit()
     {
-        return (float) $this->price - $this->getCostPrice();
+        return ((float) $this->price - $this->getCostPrice()) * (float) $this->quantity;
     }
 
     public static function getReview($product_id, $order_id)

@@ -160,46 +160,18 @@
                 </div>     -->
 
                 <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Price<span style="color: red">*</span></label>
-                        <div>
-                        <table class="table table-striped table-bordered">
-                            <thead class="bg-info text-white">
-                                <tr>
-                                    <th>Old Price (UGX)</th>
-                                    <th>New Price (UGX)</th>
-                                    <th>Cost Price (UGX)</th>
-                                    <th>Bought At</th>
-                                    <th>Sold At</th>
-                                </tr>
-                            </thead>
-
-                            <tbody >
-                            <tr>
-                                <td>
-                                    <input type="text" name="old_price"  value="{{ !empty($product->old_price) ? $product->old_price : '' }}" class="form-control" placeholder="Old Price">
-                                </td>
-                                <td>
-                                    <input type="text" name="price" required value="{{ !empty($product->price) ? $product->price : '' }}" class="form-control" placeholder="New Price">
-                                </td>
-                                <td>
-                                    <input type="text" name="cost_price"  value="{{ !empty($product->cost_price) ? $product->cost_price : '' }}" class="form-control" placeholder="Cost Price">
-                                </td>
-                                <td>
-                                    <input type="text" name="bought_at"  value="{{ !empty($product->bought_at) ? $product->bought_at : '' }}" class="form-control" placeholder="Bought At">
-                                </td>
-                                <td>
-                                    <input type="text" name="sold_at"  value="{{ !empty($product->sold_at) ? $product->sold_at : '' }}" class="form-control" placeholder="Sold At">
-                                </td>
-                                
-                            </tr>
-                        </tbody>
-                        </table>
-                        
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Bought At (UGX)</label>
+                            <input type="text" name="bought_at" value="{{ old('bought_at', $product->bought_at) }}" class="form-control" placeholder="Bought At">
                         </div>
                     </div>
-                </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Sold At (UGX)</label>
+                            <input type="text" name="sold_at" value="{{ old('sold_at', $product->sold_at) }}" class="form-control" placeholder="Sold At">
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">

@@ -253,11 +253,6 @@ class PaymentController extends Controller
         $order_item->quantity = $cart->quantity;
         $order_item->price = $cart->price;
 
-        $getProduct = ProductModel::getSingle($cart->id);
-        if (!empty($getProduct) && !empty($getProduct->cost_price)) {
-            $order_item->cost_price = $getProduct->cost_price;
-        }
-
         if (!empty($cart->attributes->color_id)) {
             $getColor = ColorModel::getSingle($cart->attributes->color_id);
             $order_item->color_name = $getColor->name;

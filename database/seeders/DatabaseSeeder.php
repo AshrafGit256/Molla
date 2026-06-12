@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ContactUsSeeder::class);
         $this->call(SmtpSeeder::class);
         $this->call(EmployeeSeeder::class);
+        $this->call(RiderSeeder::class);
 
         Model::reguard();
     }

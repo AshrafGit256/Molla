@@ -107,29 +107,32 @@ class OrderModel extends Model
 
     static public function getProfitTotal()
     {
-        return self::select(\DB::raw('SUM(orders_item.price - orders_item.cost_price) as profit'))
+        return self::select(\DB::raw('SUM(orders_item.quantity * (orders_item.price - IFNULL(product.bought_at, 0))) as profit'))
             ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
-            ->where('is_payment', '=', 1)
-            ->where('is_delete', '=', 0)
+            ->join('product', 'product.id', '=', 'orders_item.product_id')
+            ->where('orders.is_payment', '=', 1)
+            ->where('orders.is_delete', '=', 0)
             ->first()->profit ?? 0;
     }
 
     static public function getProfitToday()
     {
-        return self::select(\DB::raw('SUM(orders_item.price - orders_item.cost_price) as profit'))
+        return self::select(\DB::raw('SUM(orders_item.quantity * (orders_item.price - IFNULL(product.bought_at, 0))) as profit'))
             ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
-            ->where('is_payment', '=', 1)
-            ->where('is_delete', '=', 0)
+            ->join('product', 'product.id', '=', 'orders_item.product_id')
+            ->where('orders.is_payment', '=', 1)
+            ->where('orders.is_delete', '=', 0)
             ->whereDate('orders.created_at', '=', date('Y-m-d'))
             ->first()->profit ?? 0;
     }
 
     static public function getProfitRange($start_date, $end_date)
     {
-        return self::select(\DB::raw('SUM(orders_item.price - orders_item.cost_price) as profit'))
+        return self::select(\DB::raw('SUM(orders_item.quantity * (orders_item.price - IFNULL(product.bought_at, 0))) as profit'))
             ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
-            ->where('is_payment', '=', 1)
-            ->where('is_delete', '=', 0)
+            ->join('product', 'product.id', '=', 'orders_item.product_id')
+            ->where('orders.is_payment', '=', 1)
+            ->where('orders.is_delete', '=', 0)
             ->whereDate('orders.created_at', '>=', $start_date)
             ->whereDate('orders.created_at', '<=', $end_date)
             ->first()->profit ?? 0;
@@ -140,13 +143,14 @@ class OrderModel extends Model
         $query = self::select(
             'orders_item.product_id',
             \DB::raw('SUM(orders_item.quantity) as total_quantity'),
-            \DB::raw('SUM(orders_item.price) as total_revenue'),
-            \DB::raw('SUM(orders_item.cost_price * orders_item.quantity) as total_cost'),
-            \DB::raw('SUM(orders_item.price - orders_item.cost_price) as total_profit')
+            \DB::raw('SUM(orders_item.price * orders_item.quantity) as total_revenue'),
+            \DB::raw('SUM(IFNULL(product.bought_at, 0) * orders_item.quantity) as total_cost'),
+            \DB::raw('SUM(orders_item.quantity * (orders_item.price - IFNULL(product.bought_at, 0))) as total_profit')
         )
         ->join('orders_item', 'orders.id', '=', 'orders_item.order_id')
-        ->where('is_payment', '=', 1)
-        ->where('is_delete', '=', 0)
+        ->join('product', 'product.id', '=', 'orders_item.product_id')
+        ->where('orders.is_payment', '=', 1)
+        ->where('orders.is_delete', '=', 0)
         ->groupBy('orders_item.product_id')
         ->orderBy('total_profit', 'desc');
 

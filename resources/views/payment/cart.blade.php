@@ -128,6 +128,18 @@
 																	<div><b>Size:</b> {{ $getSize->name}} ({{ App\Support\Money::format($getSize->price) }})</div>
 																@endif
 
+																@php
+																	$boughtAt = $getCartProduct->bought_at;
+																	$soldAt = $getCartProduct->sold_at;
+																@endphp
+																@if(!empty($boughtAt) || !empty($soldAt))
+																<div class="mt-2">
+																	<small>
+																		<b>Bought:</b> {{ App\Support\Money::format($boughtAt ?? 0) }} 
+																		<b>Sold:</b> {{ App\Support\Money::format($soldAt ?? 0) }}
+																	</small>
+																</div>
+																@endif
 																
 															</h3><!-- End .product-title -->
 														</div><!-- End .product -->

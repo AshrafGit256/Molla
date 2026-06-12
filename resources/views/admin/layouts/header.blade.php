@@ -87,19 +87,21 @@ $headerUserImage = !empty($headerUser) ? $headerUser->getImage() : '';
   </ul>
 
   <!-- Right navbar links -->
-  <ul class="navbar-nav ml-auto">
-    @php
-    $getUnreadNotification = App\Models\NotificationModel::getUnreadNotification();
-    @endphp
-
-    <!-- Notifications Dropdown Menu -->
-    <li class="nav-item dropdown">
-      <a class="nav-link" data-toggle="dropdown" href="#">
-        <i class="far fa-bell"></i>
-        @if($getUnreadNotification->count() > 0)
-        <span class="badge badge-warning navbar-badge" style="color: black; font-weight:bold;">{{ $getUnreadNotification->count() }}</span>
-        @endif
-      </a>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" id="themeToggle" role="button" title="Toggle theme">
+          <i class="fas fa-moon"></i>
+        </a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="fas fa-user"></i> {{ !empty(Auth::user()->name) ? Auth::user()->name : '' }}
+        </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <span class="dropdown-item dropdown-header">
           {{ $getUnreadNotification->count() > 0 ? $getUnreadNotification->count() . ' Notifications' : 'No new notifications' }}
@@ -418,3 +420,39 @@ $headerUserImage = !empty($headerUser) ? $headerUser->getImage() : '';
     }
   });
 </script>
+
+<script src="{{ url('plugins/jquery/jquery.min.js')}}"></script>
+<script src="{{ url('plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{ url('dist/js/adminlte.js')}}"></script>
+<script>
+(function() {
+  var toggle = document.getElementById('themeToggle');
+  var body = document.body;
+  var icon = toggle ? toggle.querySelector('i') : null;
+  var saved = localStorage.getItem('adminTheme') || 'dark';
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      body.classList.remove('dark-mode');
+      if (icon) { icon.classList.remove('fa-moon'); icon.classList.add('fa-sun'); }
+    } else {
+      body.classList.add('dark-mode');
+      if (icon) { icon.classList.remove('fa-sun'); icon.classList.add('fa-moon'); }
+    }
+  }
+
+  applyTheme(saved);
+
+  if (toggle) {
+    toggle.addEventListener('click', function(e) {
+      e.preventDefault();
+      var next = body.classList.contains('dark-mode') ? 'light' : 'dark';
+      localStorage.setItem('adminTheme', next);
+      applyTheme(next);
+    });
+  }
+})();
+</script>
+@yield('script')
+</body>
+</html>

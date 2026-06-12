@@ -30,6 +30,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController as ProductFront;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\RiderController;
 use App\Mail\TestMail;
 
 // Route::get('translate',function(){
@@ -43,6 +44,18 @@ Route::get('lang/change', [langController::class, 'change'])->name('changeLang')
 // Public routes
 Route::get('/', [AuthController::class, 'login_admin']);
 Route::post('/', [AuthController::class, 'Auth_login_admin']);
+
+Route::get('rider/login', [AuthController::class, 'login_rider']);
+Route::post('rider/login', [AuthController::class, 'auth_login_rider']);
+Route::get('rider/logout', [AuthController::class, 'logout_rider']);
+
+Route::group(['middleware' => 'RiderMiddleware'], function () {
+    Route::get('rider/dashboard', [App\Http\Controllers\RiderController::class, 'dashboard']);
+    Route::get('rider/orders', [App\Http\Controllers\RiderController::class, 'orders']);
+    Route::get('rider/orders/detail/{id}', [App\Http\Controllers\RiderController::class, 'order_detail']);
+    Route::post('rider/order/status', [App\Http\Controllers\RiderController::class, 'update_status']);
+    Route::post('rider/order/notify-customer', [App\Http\Controllers\RiderController::class, 'notify_customer']);
+});
 
 
 // Admin routes with 'admin' middleware
@@ -96,6 +109,7 @@ Route::get('admin/customer/list', [AdminController::class, 'customer_list']);
 
 Route::get('admin/order/list', [OrderController::class, 'list']);
 Route::get('admin/order/detail/{id}', [OrderController::class, 'order_detail']);
+Route::post('admin/order/assign-rider', [OrderController::class, 'assign_rider']);
 Route::get('admin/order_status', [OrderController::class, 'order_status']);
 
 Route::get('admin/category/list', [CategoryController::class, 'list']);

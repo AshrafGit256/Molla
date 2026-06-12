@@ -145,7 +145,7 @@
         <span class="info-box-icon bg-maroon elevation-1"><i class="fas fa-calendar-check"></i></span>
         <div class="info-box-content">
             <span class="info-box-text">Today Profit</span>
-            <span class="info-box-number">{{ App\Support\Money::format($TodayProfit) }}</span>
+            <span class="info-box-number">{{ App\Support\Money::format($todayProfit) }}</span>
         </div>
     </div>
 </div>
@@ -449,36 +449,21 @@
                       <th>Profit</th>
                     </tr>
                   </thead>
-                  <tbody>
-                  @forelse($productProfit as $product)
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        @php
-                          $imagePath = public_path('upload/product/'.($product->image_name ?? ''));
-                        @endphp
-                        @if(!empty($product->image_name) && file_exists($imagePath))
-                          <img src="{{ url('upload/product/'.$product->image_name) }}" width="50" class="mr-3">
-                        @else
-                          <img src="{{ url('upload/no-image.png') }}" width="50" class="mr-3">
-                        @endif
-                        <div>
-                          <strong>{{ $product->title }}</strong>
-                          <div class="text-muted small">#{{ $product->id }}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{{ $product->total_quantity }}</td>
-                    <td>{{ App\Support\Money::format($product->total_revenue) }}</td>
-                    <td>{{ App\Support\Money::format($product->total_cost) }}</td>
-                    <td><strong class="text-success">{{ App\Support\Money::format($product->total_profit) }}</strong></td>
-                  </tr>
-                  @empty
-                  <tr>
-                    <td colspan="5" class="text-center">No profit data for selected period.</td>
-                  </tr>
-                  @endforelse
-                  </tbody>
+                   <tbody>
+                   @forelse($productProfit as $product)
+                   <tr>
+                     <td><strong>{{ $product->title }}</strong><div class="text-muted small">#{{ $product->id }}</div></td>
+                     <td>{{ $product->total_quantity }}</td>
+                     <td>{{ App\Support\Money::format($product->total_revenue) }}</td>
+                     <td>{{ App\Support\Money::format($product->total_cost) }}</td>
+                     <td><strong class="text-success">{{ App\Support\Money::format($product->total_profit) }}</strong></td>
+                   </tr>
+                   @empty
+                   <tr>
+                     <td colspan="5" class="text-center">No profit data for selected period.</td>
+                   </tr>
+                   @endforelse
+                   </tbody>
                 </table>
               </div>
             </div>

@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $data['TotalAmount'] = OrderModel::getTotalAmount();
         $data['TotalTodayAmount'] = OrderModel::getTotalTodayAmount();
         $data['TotalProfit'] = OrderModel::getProfitTotal();
-        $data['TodayProfit'] = OrderModel::getProfitToday();
+        $data['todayProfit'] = OrderModel::getProfitToday();
         $data['TotalCustomer'] = User::getTotalCustomer();
         $data['TotalTodayCustomer'] = User::getTotalTodayCustomer();
 
@@ -100,11 +100,11 @@ class DashboardController extends Controller
         $data['productProfit'] = ProductModel::select(
                 'product.id',
                 'product.title',
-                'product.image_name',
+                'product.bought_at',
                 \DB::raw('SUM(orders_item.quantity) as total_quantity'),
                 \DB::raw('SUM(orders_item.price * orders_item.quantity) as total_revenue'),
-                \DB::raw('SUM(orders_item.cost_price * orders_item.quantity) as total_cost'),
-                \DB::raw('SUM((orders_item.price - orders_item.cost_price) * orders_item.quantity) as total_profit')
+                \DB::raw('SUM(IFNULL(product.bought_at, 0) * orders_item.quantity) as total_cost'),
+                \DB::raw('SUM(orders_item.quantity * (orders_item.price - IFNULL(product.bought_at, 0))) as total_profit')
             )
             ->join('orders_item', 'product.id', '=', 'orders_item.product_id')
             ->join('orders', 'orders.id', '=', 'orders_item.order_id')
@@ -112,7 +112,7 @@ class DashboardController extends Controller
             ->where('orders.is_delete', 0)
             ->whereDate('orders.created_at', '>=', $profitFrom)
             ->whereDate('orders.created_at', '<=', $profitTo)
-            ->groupBy('product.id', 'product.title', 'product.image_name')
+            ->groupBy('product.id', 'product.title', 'product.bought_at')
             ->orderBy('total_profit', 'desc')
             ->get();
 

@@ -43,7 +43,42 @@ class AuthController extends Controller
         }
     }
 
-    // Logout admin
+    // Delivery rider login page
+    public function login_rider()
+    {
+        if (Auth::check() && Auth::user()->is_delivery == 1) {
+            return redirect('rider/dashboard');
+        }
+
+        return view('rider.auth.login');
+    }
+
+    // Handle delivery rider login
+    public function auth_login_rider(Request $request)
+    {
+        $remember = !empty($request->remember) ? true : false;
+
+        if (Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+            'is_delivery' => 1,
+            'status' => 0,
+            'is_delete' => 0
+        ], $remember)) {
+            return redirect('rider/dashboard');
+        } else {
+            return redirect()->back()->with('error', "Please enter correct email and password");
+        }
+    }
+
+    // Logout delivery rider
+    public function logout_rider()
+    {
+        Auth::logout();
+        return redirect('/');
+    }
+
+    // Admin logout
     public function logout_admin()
     {
         Auth::logout();

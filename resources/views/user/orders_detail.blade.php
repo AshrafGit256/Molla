@@ -249,20 +249,101 @@
                                                 @endif
 
                                             </td>
-                                            @endif
+                                @endif
 
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                @if($getRecord->status == 1 && !empty($getRecord->delivery_started_at) && !empty($getRecord->delivery_latitude) && !empty($getRecord->delivery_longitude))
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-map-marked-alt mr-2"></i>Live Delivery Tracking</h3>
+                    </div>
+                    <div class="card-body">
+                        @if(!empty($getRecord->delivery_duration_minutes))
+                        <p><strong>Rider has started moving!</strong> Delivery ETA: <span id="CustomerEtaCountdown" class="eta-countdown" data-start="{{ strtotime($getRecord->delivery_started_at) }}" data-minutes="{{ $getRecord->delivery_duration_minutes }}">{{ date('H:i', strtotime('+' . $getRecord->delivery_duration_minutes . ' minutes', strtotime($getRecord->delivery_started_at))) }}</span> (about {{ $getRecord->delivery_duration_minutes }} minutes, {{ $getRecord->delivery_distance_km }} km).</p>
+                        @else
+                        <p><strong>Rider has started moving!</strong> We'll update the estimated arrival time shortly.</p>
+                        @endif
+                        <div id="CustomerTrackingMap" style="height: 420px; border-radius: 8px; border: 1px solid #eee;"></div>
                     </div>
                 </div>
+                @endif
+
             </div>
         </div>
     </div>
 </main>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+var riderTrackingLat = {{ !empty($getRecord->delivery_latitude) ? $getRecord->delivery_latitude : 'null' }};
+var riderTrackingLng = {{ !empty($getRecord->delivery_longitude) ? $getRecord->delivery_longitude : 'null' }};
+
+@if($getRecord->status == 1 && !empty($getRecord->delivery_started_at) && !empty($getRecord->delivery_latitude) && !empty($getRecord->delivery_longitude))
+(function() {
+  var map = L.map('CustomerTrackingMap').setView([riderTrackingLat, riderTrackingLng], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
+
+  var storeIcon = L.icon({
+    iconUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34]
+  });
+
+  var customerIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34]
+  });
+
+  L.marker([riderTrackingLat, riderTrackingLng], {icon: customerIcon}).addTo(map).bindPopup('Delivery point');
+})();
+@endif
+</script>
+
+<script>
+(function() {
+  var el = document.getElementById('CustomerEtaCountdown');
+  if (!el || !el.dataset.start || !el.dataset.minutes) {
+    return;
+  }
+
+  var start = parseInt(el.dataset.start, 10) * 1000;
+  var duration = parseInt(el.dataset.minutes, 10) * 60 * 1000;
+  var end = start + duration;
+
+  function render() {
+    var now = Date.now();
+    var diff = end - now;
+
+    if (diff <= 0) {
+      el.textContent = '00:00';
+      return;
+    }
+
+    var totalMinutes = Math.floor(diff / 60000);
+    var hours = Math.floor(totalMinutes / 60);
+    var minutes = totalMinutes % 60;
+    var seconds = Math.floor((diff % 60000) / 1000);
+    var text = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+    el.textContent = text;
+  }
+
+  render();
+  setInterval(render, 1000);
+})();
+</script>
 
 <!-- Modal -->
 <div class="modal fade" id="MakeReviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

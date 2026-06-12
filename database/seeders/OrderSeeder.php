@@ -37,6 +37,8 @@ class OrderSeeder extends Seeder
                 [
                     'transaction_id' => 'TXN-SEED-'.str_pad((string) ($index + 1), 3, '0', STR_PAD_LEFT),
                     'user_id' => $customer->id,
+                    'rider_id' => $index === 0 ? \App\Models\User::where('is_delivery', 1)->value('id') : null,
+                    'rider_name' => $index === 0 ? 'Rider One' : null,
                     'first_name' => $customer->name,
                     'last_name' => $customer->last_name ?: 'Customer',
                     'company_name' => $customer->company_name,
