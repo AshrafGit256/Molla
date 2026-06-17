@@ -194,9 +194,11 @@ class AuthController extends Controller
             // Send the ForgotPasswordMail to the user's email
             try {
                 Mail::to($user->email)->send(new ForgotPasswordMail($user));
+                Log::info('Password reset email sent successfully to: ' . $user->email);
             } catch (\Exception $e) {
+                Log::error('Failed to send password reset email: ' . $e->getMessage());
+                return redirect()->back()->with('error', "Unable to send password reset email. Please try again later.");
             }
-
 
             // Redirect back with a success message
             return redirect()->back()->with('success', "Password reset email has been sent.");

@@ -30,17 +30,18 @@ class AppServiceProvider extends ServiceProvider
                 $mailsetting = \App\Models\SMTPModel::getSingle();
 
                 if ($mailsetting) {
-                    \Illuminate\Support\Facades\Config::set('mail', [
-                        'driver' => $mailsetting->mail_mailer,
+                    \Illuminate\Support\Facades\Config::set('mail.default', $mailsetting->mail_mailer);
+                    \Illuminate\Support\Facades\Config::set('mail.mailers.smtp', [
+                        'transport' => 'smtp',
                         'host' => $mailsetting->mail_host,
                         'port' => $mailsetting->mail_port,
                         'encryption' => $mailsetting->mail_encryption,
                         'username' => $mailsetting->mail_username,
                         'password' => $mailsetting->mail_password,
-                        'from' => [
-                            'address' => $mailsetting->mail_from_address,
-                            'name' => $mailsetting->name
-                        ]
+                    ]);
+                    \Illuminate\Support\Facades\Config::set('mail.from', [
+                        'address' => $mailsetting->mail_from_address,
+                        'name' => $mailsetting->name
                     ]);
                 }
             }

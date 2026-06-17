@@ -80,7 +80,7 @@
 
                     <div class="product-card-note">
                         @if(!empty($value->in_stock))
-                            In stock • Fast checkout
+                            In stock - Fast checkout
                         @else
                             Availability on request
                         @endif

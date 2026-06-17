@@ -75,6 +75,7 @@
 $getSettingHeader = App\Models\SystemSettingModel::getSingle();
 $headerUser = Auth::user();
 $headerUserImage = !empty($headerUser) ? $headerUser->getImage() : '';
+$getUnreadNotification = Auth::check() ? App\Models\NotificationModel::getUnreadNotification(Auth::user()->id) : null;
 @endphp
 
 <!-- Navbar -->
@@ -104,11 +105,15 @@ $headerUserImage = !empty($headerUser) ? $headerUser->getImage() : '';
         </a>
       <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <span class="dropdown-item dropdown-header">
-          {{ $getUnreadNotification->count() > 0 ? $getUnreadNotification->count() . ' Notifications' : 'No new notifications' }}
+          @if($getUnreadNotification && $getUnreadNotification->count() > 0)
+          {{ $getUnreadNotification->count() . ' Notifications' }}
+          @else
+          No new notifications
+          @endif
         </span>
 
         <div class="notification-dropdown">
-          @if($getUnreadNotification->isEmpty())
+          @if(!$getUnreadNotification || $getUnreadNotification->isEmpty())
           <div class="dropdown-item text-center text-muted">
             No new notifications
           </div>

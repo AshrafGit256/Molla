@@ -31,8 +31,9 @@ class RegisterMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $setting = SystemSettingModel::getSingle();
         return new Envelope(
-            subject: $this->setting->website_name.'Validation',
+            subject: ($setting->website_name ?? 'Ecommerce') . ' - Email Verification',
         );
     }
 

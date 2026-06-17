@@ -178,7 +178,7 @@
 
                                     <span class="cart-product-info">
                                         <span class="cart-product-qty">{{ $header_cart->quantity }}</span>
-                                        x {{ number_format($header_cart->price), 2 }}
+                                        x {{ App\Support\Money::format($header_cart->price) }}
                                     </span>
                                 </div>
 
@@ -196,7 +196,7 @@
                         <div class="dropdown-cart-total">
                             <span>Total</span>
 
-                            <span class="cart-total-price">${{ number_format(Cart::getSubTotal(), 2) }}</span>
+                            <span class="cart-total-price">{{ App\Support\Money::format(Cart::getSubTotal()) }}</span>
                         </div>
 
                         <div class="dropdown-cart-action">

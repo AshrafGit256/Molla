@@ -41,10 +41,10 @@ class NotificationModel extends Model
                         ->paginate(20);
     }
     
-    public static function getUnreadNotification()
+    public static function getUnreadNotification($user_id)
     {
         return NotificationModel::where('is_read', '=', 0)
-                        ->where('user_id', '=', 1)
+                        ->where('user_id', '=', $user_id)
                         ->orderBy('id', 'desc')
                         ->get();
     }

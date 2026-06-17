@@ -4,9 +4,10 @@ Hi <b>{{ $user->name }}</b>,
 
 @php
     $getSetting = App\Models\SystemSettingModel::getSingle();
+    $websiteName = $getSetting->website_name ?? 'DukaGo';
 @endphp
 
-<p>It seems like you have requested to reset your password for your <strong>{{ $getSetting->website_name }}</strong> website account.</p>
+<p>It seems like you have requested to reset your password for your <strong>{{ $websiteName }}</strong> website account.</p>
 
 <p>Simply click the button below to reset your password:</p>
 
@@ -19,6 +20,6 @@ Reset Password
 <p>If you did not request a password reset, no further action is required.</p>
 
 Thanks,<br>
-<strong>{{ $getSetting->website_name }}</strong>
+<strong>{{ $websiteName }}</strong>
 
 @endcomponent

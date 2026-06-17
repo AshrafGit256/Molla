@@ -49,7 +49,7 @@ Route::get('rider/login', [AuthController::class, 'login_rider']);
 Route::post('rider/login', [AuthController::class, 'auth_login_rider']);
 Route::get('rider/logout', [AuthController::class, 'logout_rider']);
 
-Route::group(['middleware' => 'RiderMiddleware'], function () {
+Route::group(['middleware' => \App\Http\Middleware\RiderMiddleware::class], function () {
     Route::get('rider/dashboard', [App\Http\Controllers\RiderController::class, 'dashboard']);
     Route::get('rider/orders', [App\Http\Controllers\RiderController::class, 'orders']);
     Route::get('rider/orders/detail/{id}', [App\Http\Controllers\RiderController::class, 'order_detail']);
@@ -59,30 +59,22 @@ Route::group(['middleware' => 'RiderMiddleware'], function () {
 
 
 // Admin routes with 'admin' middleware
-Route::group(['middleware' => 'user'], function() {
-    
+Route::group(['middleware' => \App\Http\Middleware\UserMiddleware::class], function() {
+    Route::get('/dashboard', [UserController::class, 'dashboard']);
+    Route::get('/orders', [UserController::class, 'orders']);
+    Route::get('/user/orders/detail/{id}', [UserController::class, 'orders_detail'])->name('orders.detail');
+
+    Route::get('/edit-profile', [UserController::class, 'edit_profile']);
+    Route::post('/edit-profile', [UserController::class, 'update_profile']);
+
+    Route::get('/change-password', [UserController::class, 'change_password']);
+    Route::post('/change-password', [UserController::class, 'update_password']);
+
+    Route::post('add_to_wishlist', [UserController::class, 'add_to_wishlist']);
+    Route::post('user/make-review', [UserController::class, 'submit_review']);
+    Route::get('/notifications', [UserController::class, 'notifications']);
+    Route::get('my-wishlist', [ProductFront::class, 'my_wishlist']);
 });
-
-Route::get('/dashboard', [UserController::class, 'dashboard']);
-Route::get('/orders', [UserController::class, 'orders']);
-
-
-Route::get('/user/orders/detail/{id}', [UserController::class, 'orders_detail'])->name('orders.detail');
-
-Route::get('/edit-profile', [UserController::class, 'edit_profile']);
-Route::post('/edit-profile', [UserController::class, 'update_profile']);
-
-Route::get('/change-password', [UserController::class, 'change_password']);
-Route::post('/change-password', [UserController::class, 'update_password']);
-
-Route::post('add_to_wishlist', [UserController::class, 'add_to_wishlist']);
-
-Route::post('user/make-review', [UserController::class, 'submit_review']);
-
-Route::get('/notifications', [UserController::class, 'notifications']);
-
-
-Route::get('my-wishlist', [ProductFront::class, 'my_wishlist']);
 Route::post('blog/submit_comment', [HomeController::class, 'submit_blog_comment']);
 
 
