@@ -18,23 +18,20 @@ class BrandSeeder extends Seeder
         }
 
         $brands = [
-            ['name' => 'Nike', 'slug' => Str::slug('Nike')],
-            ['name' => 'Adidas', 'slug' => Str::slug('Adidas')],
-            ['name' => 'Puma', 'slug' => Str::slug('Puma')],
-            ['name' => 'Reebok', 'slug' => Str::slug('Reebok')],
-            ['name' => 'New Balance', 'slug' => Str::slug('New Balance')],
-            ['name' => 'Under Armour', 'slug' => Str::slug('Under Armour')],
-            ['name' => 'Converse', 'slug' => Str::slug('Converse')],
-            ['name' => 'Vans', 'slug' => Str::slug('Vans')],
-            ['name' => 'Tommy Hilfiger', 'slug' => Str::slug('Tommy Hilfiger')],
-            ['name' => 'Calvin Klein', 'slug' => Str::slug('Calvin Klein')],
-            ['name' => 'Apple', 'slug' => Str::slug('Apple')],
-            ['name' => 'Samsung', 'slug' => Str::slug('Samsung')],
-            ['name' => 'Sony', 'slug' => Str::slug('Sony')],
-            ['name' => 'LG', 'slug' => Str::slug('LG')],
-            ['name' => 'Ikea', 'slug' => Str::slug('Ikea')],
-            ['name' => 'Maybelline', 'slug' => Str::slug('Maybelline')],
-            ['name' => 'L\'Oreal', 'slug' => Str::slug('L\'Oreal')],
+            ['name' => 'Carter\'s', 'slug' => Str::slug('Carter\'s')],
+            ['name' => 'Gerber', 'slug' => Str::slug('Gerber')],
+            ['name' => 'H&M Kids', 'slug' => Str::slug('H&M Kids')],
+            ['name' => 'Gap Kids', 'slug' => Str::slug('Gap Kids')],
+            ['name' => 'Old Navy Kids', 'slug' => Str::slug('Old Navy Kids')],
+            ['name' => 'Zara Kids', 'slug' => Str::slug('Zara Kids')],
+            ['name' => 'Crocs Kids', 'slug' => Str::slug('Crocs Kids')],
+            ['name' => 'Nike Kids', 'slug' => Str::slug('Nike Kids')],
+            ['name' => 'Adidas Kids', 'slug' => Str::slug('Adidas Kids')],
+            ['name' => 'Puma Kids', 'slug' => Str::slug('Puma Kids')],
+            ['name' => 'Under Armour Kids', 'slug' => Str::slug('Under Armour Kids')],
+            ['name' => 'Little Me', 'slug' => Str::slug('Little Me')],
+            ['name' => 'Janie and Jack', 'slug' => Str::slug('Janie and Jack')],
+            ['name' => 'Ralph Lauren Kids', 'slug' => Str::slug('Ralph Lauren Kids')],
         ];
 
         foreach ($brands as $brand) {

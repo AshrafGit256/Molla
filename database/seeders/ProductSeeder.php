@@ -19,325 +19,47 @@ class ProductSeeder extends Seeder
             return;
         }
 
-        $products = [
-            // Men's T-Shirts
-            [
-                'title' => 'Classic Cotton T-Shirt',
-                'description' => 'Premium quality 100% cotton t-shirt perfect for everyday wear',
-                'short_description' => 'Comfortable and durable cotton t-shirt',
-                'price' => 29.99,
-                'old_price' => 39.99,
-                'category' => 'Men\'s Clothing',
-                'sub_category' => 'T-Shirts',
-                'brand' => 'Nike',
-                'sku' => 100001,
-                'additional_information' => 'Available in multiple sizes and colors',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 50,
-            ],
-            [
-                'title' => 'Striped Performance Tee',
-                'description' => 'Moisture-wicking performance t-shirt for active lifestyle',
-                'short_description' => 'Performance fabric for comfort during activities',
-                'price' => 34.99,
-                'old_price' => 49.99,
-                'category' => 'Men\'s Clothing',
-                'sub_category' => 'T-Shirts',
-                'brand' => 'Adidas',
-                'sku' => 100002,
-                'additional_information' => 'Breathable and quick-dry fabric',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 45,
-            ],
-            // Men's Shirts
-            [
-                'title' => 'Formal White Dress Shirt',
-                'description' => 'Elegant formal dress shirt made from premium cotton',
-                'short_description' => 'Perfect for business and formal occasions',
-                'price' => 59.99,
-                'old_price' => 79.99,
-                'category' => 'Men\'s Clothing',
-                'sub_category' => 'Shirts',
-                'brand' => 'Tommy Hilfiger',
-                'sku' => 100101,
-                'additional_information' => 'Easy care, machine washable',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 30,
-            ],
-            [
-                'title' => 'Casual Denim Shirt',
-                'description' => 'Versatile denim shirt for casual and semi-formal wear',
-                'short_description' => 'Timeless denim style for all occasions',
-                'price' => 49.99,
-                'old_price' => 69.99,
-                'category' => 'Men\'s Clothing',
-                'sub_category' => 'Shirts',
-                'brand' => 'Puma',
-                'sku' => 100102,
-                'additional_information' => 'Sturdy construction with button-down design',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 35,
-            ],
-            // Men's Pants
-            [
-                'title' => 'Black Slim Fit Jeans',
-                'description' => 'Modern slim fit jeans with stretch comfort',
-                'short_description' => 'Stylish slim fit design for a contemporary look',
-                'price' => 64.99,
-                'old_price' => 89.99,
-                'category' => 'Men\'s Clothing',
-                'sub_category' => 'Pants',
-                'brand' => 'Reebok',
-                'sku' => 100201,
-                'additional_information' => 'Stretch denim for enhanced comfort',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 40,
-            ],
-            // Women's Dresses
-            [
-                'title' => 'Elegant Summer Dress',
-                'description' => 'Light and breezy summer dress perfect for warm weather',
-                'short_description' => 'Perfect for summer outings and casual events',
-                'price' => 54.99,
-                'old_price' => 74.99,
-                'category' => 'Women\'s Clothing',
-                'sub_category' => 'Dresses',
-                'brand' => 'Calvin Klein',
-                'sku' => 200001,
-                'additional_information' => 'Made from breathable cotton-blend fabric',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 35,
-            ],
-            [
-                'title' => 'Black Formal Evening Dress',
-                'description' => 'Sophisticated formal evening dress for special occasions',
-                'short_description' => 'Elegant design for formal events and parties',
-                'price' => 89.99,
-                'old_price' => 129.99,
-                'category' => 'Women\'s Clothing',
-                'sub_category' => 'Dresses',
-                'brand' => 'Tommy Hilfiger',
-                'sku' => 200002,
-                'additional_information' => 'Premium fabric with flattering silhouette',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 20,
-            ],
-            // Women's Tops
-            [
-                'title' => 'Casual Blouse',
-                'description' => 'Comfortable and stylish casual blouse',
-                'short_description' => 'Perfect for everyday wear and casual outings',
-                'price' => 39.99,
-                'old_price' => 54.99,
-                'category' => 'Women\'s Clothing',
-                'sub_category' => 'Tops',
-                'brand' => 'Adidas',
-                'sku' => 200101,
-                'additional_information' => 'Available in various colors and patterns',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 50,
-            ],
-            // Footwear - Running Shoes
-            [
-                'title' => 'Pro Running Shoes',
-                'description' => 'High-performance running shoes with advanced cushioning',
-                'short_description' => 'Engineered for maximum comfort during running',
-                'price' => 129.99,
-                'old_price' => 169.99,
-                'category' => 'Footwear',
-                'sub_category' => 'Running Shoes',
-                'brand' => 'Nike',
-                'sku' => 300001,
-                'additional_information' => 'Breathable mesh upper with responsive sole',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 60,
-            ],
-            [
-                'title' => 'Ultra-Light Sprint Trainers',
-                'description' => 'Lightweight trainers designed for speed and agility',
-                'short_description' => 'Ideal for sprinting and track training',
-                'price' => 119.99,
-                'old_price' => 159.99,
-                'category' => 'Footwear',
-                'sub_category' => 'Running Shoes',
-                'brand' => 'Adidas',
-                'sku' => 300002,
-                'additional_information' => 'Ultra-responsive cushioning system',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 55,
-            ],
-            // Footwear - Casual Shoes
-            [
-                'title' => 'Classic White Sneakers',
-                'description' => 'Versatile white sneakers that go with everything',
-                'short_description' => 'Timeless casual sneakers for everyday wear',
-                'price' => 79.99,
-                'old_price' => 109.99,
-                'category' => 'Footwear',
-                'sub_category' => 'Casual Shoes',
-                'brand' => 'Converse',
-                'sku' => 300101,
-                'additional_information' => 'Durable canvas construction',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 70,
-            ],
-            [
-                'title' => 'Urban Street Sneakers',
-                'description' => 'Trendy street-style sneakers with modern design',
-                'short_description' => 'Perfect for casual and streetwear fashion',
-                'price' => 84.99,
-                'old_price' => 119.99,
-                'category' => 'Footwear',
-                'sub_category' => 'Casual Shoes',
-                'brand' => 'Vans',
-                'sku' => 300102,
-                'additional_information' => 'Comfortable padding for all-day wear',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 65,
-            ],
-            // Accessories - Hats
-            [
-                'title' => 'Classic Baseball Cap',
-                'description' => 'Traditional baseball cap with adjustable fit',
-                'short_description' => 'Perfect for sun protection and style',
-                'price' => 24.99,
-                'old_price' => 34.99,
-                'category' => 'Accessories',
-                'sub_category' => 'Hats',
-                'brand' => 'Nike',
-                'sku' => 400001,
-                'additional_information' => 'Adjustable velcro closure',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 100,
-            ],
-            // Sports Wear - Gym Wear
-            [
-                'title' => 'Performance Gym T-Shirt',
-                'description' => 'Moisture-wicking gym wear for intense workouts',
-                'short_description' => 'Designed for maximum performance during training',
-                'price' => 44.99,
-                'old_price' => 59.99,
-                'category' => 'Sports Wear',
-                'sub_category' => 'Gym Wear',
-                'brand' => 'Under Armour',
-                'sku' => 500001,
-                'additional_information' => 'Advanced moisture-wicking technology',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 55,
-            ],
-            [
-                'title' => 'Kids Adventure Hoodie',
-                'description' => 'Soft fleece hoodie built for school days and weekend play',
-                'short_description' => 'Comfortable hoodie for kids',
-                'price' => 32.99,
-                'old_price' => 44.99,
-                'category' => 'Kids Clothing',
-                'sub_category' => 'Boys',
-                'brand' => 'Puma',
-                'sku' => 600001,
-                'additional_information' => 'Machine washable fleece with kangaroo pocket',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 40,
-            ],
-            [
-                'title' => 'Girls Floral Party Dress',
-                'description' => 'Light floral dress for birthdays, family events, and sunny days',
-                'short_description' => 'Pretty floral dress for girls',
-                'price' => 38.99,
-                'old_price' => 52.99,
-                'category' => 'Kids Clothing',
-                'sub_category' => 'Girls',
-                'brand' => 'Calvin Klein',
-                'sku' => 600101,
-                'additional_information' => 'Cotton blend with lined skirt',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 34,
-            ],
-            [
-                'title' => 'Samsung Galaxy A Series Phone',
-                'description' => 'Everyday smartphone with bright display and dependable battery life',
-                'short_description' => 'Reliable Android smartphone',
-                'price' => 249.99,
-                'old_price' => 299.99,
-                'category' => 'Electronics',
-                'sub_category' => 'Smartphones',
-                'brand' => 'Samsung',
-                'sku' => 700001,
-                'additional_information' => 'Unlocked dual-sim phone with 128GB storage',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 25,
-            ],
-            [
-                'title' => 'Apple Air Lightweight Laptop',
-                'description' => 'Slim laptop for study, work, browsing, and creative projects',
-                'short_description' => 'Portable laptop for everyday work',
-                'price' => 899.99,
-                'old_price' => 1049.99,
-                'category' => 'Electronics',
-                'sub_category' => 'Laptops',
-                'brand' => 'Apple',
-                'sku' => 700101,
-                'additional_information' => 'Lightweight design with long battery life',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 12,
-            ],
-            [
-                'title' => 'Ikea Compact Coffee Table',
-                'description' => 'Minimal coffee table sized for apartments and living rooms',
-                'short_description' => 'Compact living room coffee table',
-                'price' => 79.99,
-                'old_price' => 109.99,
-                'category' => 'Home & Garden',
-                'sub_category' => 'Furniture',
-                'brand' => 'Ikea',
-                'sku' => 800001,
-                'additional_information' => 'Flat-pack table with easy assembly',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 30,
-            ],
-            [
-                'title' => 'Modern Ceramic Dinner Set',
-                'description' => 'Durable ceramic dinner set for daily meals and hosting',
-                'short_description' => 'Ceramic dinnerware set',
-                'price' => 64.99,
-                'old_price' => 89.99,
-                'category' => 'Home & Garden',
-                'sub_category' => 'Kitchen',
-                'brand' => 'Ikea',
-                'sku' => 800101,
-                'additional_information' => 'Includes plates, bowls, and mugs for four people',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 28,
-            ],
-            [
-                'title' => 'Maybelline Daily Makeup Kit',
-                'description' => 'Starter makeup kit with essentials for everyday looks',
-                'short_description' => 'Everyday makeup essentials',
-                'price' => 49.99,
-                'old_price' => 69.99,
-                'category' => 'Beauty & Health',
-                'sub_category' => 'Makeup',
-                'brand' => 'Maybelline',
-                'sku' => 900001,
-                'additional_information' => 'Includes foundation, mascara, lip color, and compact',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 45,
-            ],
-            [
-                'title' => 'Loreal Hydrating Skincare Set',
-                'description' => 'Gentle skincare set for cleansing, toning, and moisturising',
-                'short_description' => 'Hydrating skincare routine set',
-                'price' => 57.99,
-                'old_price' => 79.99,
-                'category' => 'Beauty & Health',
-                'sub_category' => 'Skincare',
-                'brand' => 'L\'Oreal',
-                'sku' => 900101,
-                'additional_information' => 'Includes cleanser, toner, serum, and moisturiser',
-                'shipping_returns' => 'Free shipping on orders over $50. 30-day return policy',
-                'stock' => 36,
-            ],
-        ];
+        $categories = CategoryModel::all();
+        $brands = BrandModel::all();
+        $products = [];
+        $skuCounter = 100001;
+
+        $patterns = ['Dino', 'Floral', 'Striped', 'Animal', 'Polka Dot', 'Solid', 'Star', 'Heart', 'Rainbow', 'Unicorn'];
+        $colors = ['Sky Blue', 'Pink Rose', 'Cloud White', 'Mint Green', 'Sunshine Yellow', 'Lavender', 'Peach', 'Navy', 'Red', 'Purple'];
+        $materials = ['Cotton', 'Fleece', 'Denim', 'Flannel', 'Jersey'];
+        $types = ['T-Shirt', 'Dress', 'Pants', 'Shorts', 'Romper', 'Jumpsuit', 'Top', 'Hoodie', 'Leggings', 'Sleepwear'];
+
+foreach ($categories as $category) {
+            $subCategories = SubCategoryModel::where('category_id', $category->id)->get();
+            $productsPerCategory = 25;
+
+            for ($i = 0; $i < $productsPerCategory; $i++) {
+                $subCategory = $subCategories->random();
+                $brand = $brands->random();
+                
+                $pattern = $patterns[array_rand($patterns)];
+                $color = $colors[array_rand($colors)];
+                $productNumber = $i + 1;
+                $productName = $this->generateProductName($category->name, $subCategory->name, $pattern, $color) . ' #' . $productNumber;
+                $price = rand(8, 49) + (rand(0, 99) / 100);
+                $oldPrice = round($price * (115 + rand(0, 25)) / 100, 2);
+
+                $products[] = [
+                    'title' => $productName,
+                    'description' => 'High-quality ' . strtolower($materials[array_rand($materials)]) . ' clothing for comfortable everyday wear',
+                    'short_description' => 'Soft and comfortable kids clothing',
+                    'price' => $price,
+                    'old_price' => $oldPrice,
+                    'category' => $category->name,
+                    'sub_category' => $subCategory->name,
+                    'brand' => $brand->name,
+                    'sku' => $skuCounter++,
+                    'additional_information' => 'Soft cotton material, machine washable, comfortable fit for active play',
+                    'shipping_returns' => 'Free shipping. Easy returns within 30 days.',
+                    'stock' => rand(15, 80),
+                ];
+}
+        }
 
         foreach ($products as $prod) {
             $category = CategoryModel::where('name', $prod['category'])->first();
@@ -368,5 +90,31 @@ class ProductSeeder extends Seeder
                 );
             }
         }
+    }
+
+    private function generateProductName($category, $subCategory, $pattern, $color)
+    {
+        $ageGroup = '';
+        if (strpos($category, 'Newborn') !== false) $ageGroup = 'Infant ';
+        elseif (strpos($category, 'Baby') !== false) $ageGroup = 'Baby ';
+        elseif (strpos($category, 'Toddler') !== false) $ageGroup = 'Toddler ';
+        
+        if (strpos($subCategory, 'Onesies') !== false) {
+            return $ageGroup . 'Snap Sleeve Onesie - ' . $pattern . ' ' . $color;
+        }
+        if (strpos($subCategory, 'Sleepwear') !== false) {
+            return $ageGroup . 'Cozy Pajama Set - ' . $pattern;
+        }
+        if (strpos($subCategory, 'Shoes') !== false) {
+            return $ageGroup . 'First Walk Sneakers - ' . $color;
+        }
+        if (strpos($subCategory, 'Dress') !== false) {
+            return $ageGroup . $pattern . ' Party Dress - ' . $color;
+        }
+        if (strpos($subCategory, 'Romper') !== false || strpos($subCategory, 'Jumpsuit') !== false) {
+            return $ageGroup . $pattern . ' Romper - ' . $color;
+        }
+        
+        return $ageGroup . $pattern . ' T-Shirt - ' . $color;
     }
 }

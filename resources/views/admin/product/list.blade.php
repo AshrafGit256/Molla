@@ -28,6 +28,13 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">Product List</h3>
+                <div class="card-tools" style="margin-top: 5px;">
+                    <form method="get" action="{{ url('admin/product/list') }}" style="display: flex;">
+                        <input type="text" name="q" class="form-control" placeholder="Search by product name..." value="{{ request()->get('q') }}" style="width: 250px; margin-right: 10px;">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+                        <a href="{{ url('admin/product/list') }}" class="btn btn-secondary" style="margin-left: 5px;"><i class="fas fa-sync"></i> Reset</button></a>
+                    </form>
+                </div>
               </div>
 
               @include('admin.layouts._message')

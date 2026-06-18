@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('style')
     <link rel="stylesheet" href="{{ url('assets/css/plugins/nouislider/nouislider.css') }}">
@@ -108,12 +108,10 @@
 								@if(!empty($getSubCategoryFilter))
                 				<div class="widget widget-collapsible">
     								<h3 class="widget-title">
-									    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-									        Category
-									    </a>
+									    <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="false" aria-controls="widget-1" class="filter-icon"><i class="icon-th"></i><span class="sr-only">Category</span></a>
 									</h3><!-- End .widget-title -->
 
-									<div class="collapse show" id="widget-1">
+									<div class="collapse" id="widget-1">
 										<div class="widget-body">
 											<div class="filter-items filter-items-count">
 												@foreach($getSubCategoryFilter as $f_category)
@@ -135,12 +133,10 @@
 
         						<div class="widget widget-collapsible">
     								<h3 class="widget-title">
-									    <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="true" aria-controls="widget-3">
-									        Color
-									    </a>
+									    <a data-toggle="collapse" href="#widget-3" role="button" aria-expanded="false" aria-controls="widget-3" class="filter-icon"><i class="icon-cogs"></i><span class="sr-only">Color</span></a>
 									</h3><!-- End .widget-title -->
 
-									<div class="collapse show" id="widget-3">
+									<div class="collapse" id="widget-3">
 										<div class="widget-body">
 											<div class="filter-colors">
 												@foreach($getColor as $f_color)
@@ -153,12 +149,10 @@
 
         						<div class="widget widget-collapsible">
     								<h3 class="widget-title">
-									    <a data-toggle="collapse" href="#widget-4" role="button" aria-expanded="true" aria-controls="widget-4">
-									        Brand
-									    </a>
+									    <a data-toggle="collapse" href="#widget-4" role="button" aria-expanded="false" aria-controls="widget-4" class="filter-icon"><i class="icon-shopping-cart"></i><span class="sr-only">Brand</span></a>
 									</h3><!-- End .widget-title -->
 
-									<div class="collapse show" id="widget-4">
+									<div class="collapse" id="widget-4">
 										<div class="widget-body">
 											<div class="filter-items">
 											@foreach($getBrand as $f_brand)
@@ -178,12 +172,10 @@
 
         						<div class="widget widget-collapsible">
     								<h3 class="widget-title">
-									    <a data-toggle="collapse" href="#widget-5" role="button" aria-expanded="true" aria-controls="widget-5">
-									        Price
-									    </a>
+									    <a data-toggle="collapse" href="#widget-5" role="button" aria-expanded="false" aria-controls="widget-5" class="filter-icon"><i class="icon-cogs"></i><span class="sr-only">Price</span></a>
 									</h3><!-- End .widget-title -->
 
-									<div class="collapse show" id="widget-5">
+									<div class="collapse" id="widget-5">
 										<div class="widget-body">
                                             <div class="filter-price">
                                                 <div class="filter-price-text">
@@ -389,3 +381,7 @@
 </script>
 
 @endsection
+
+
+
+

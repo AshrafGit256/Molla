@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -451,6 +451,92 @@
                 text-align: left;
             }
         }
+    
+        /* Pinterest masonry layout */
+        .pinterest-style { margin: -4px; }
+        .pinterest-masonry { column-count: 2; column-gap: 8px; column-fill: balance; }
+        @media (min-width: 576px) { .pinterest-masonry { column-count: 2; } }
+        @media (min-width: 768px) { .pinterest-masonry { column-count: 3; } }
+        @media (min-width: 992px) { .pinterest-masonry { column-count: 4; } }
+        @media (min-width: 1200px) { .pinterest-masonry { column-count: 5; } }
+        .pinterest-item { display: block; margin-bottom: 8px; break-inside: avoid; }
+
+        .filter-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--shop-soft);
+            transition: background 0.2s ease;
+        }
+        .filter-icon:hover { background: var(--shop-accent); }
+        .filter-icon:hover i { color: #fff; }
+        .filter-icon i {
+            font-size: 18px;
+            color: var(--shop-ink);
+        }
+
+        /* Pinterest simplified product cards */
+        .product-card-pinterest {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            background: #fff;
+        }
+
+        .product-card-image-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .product-card-pinterest img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .product-card-placeholder {
+            width: 100%;
+            height: 200px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-card-price-tag {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: rgba(255,255,255,0.9);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #333;
+            backdrop-filter: blur(2px);
+        }
+
+        .product-card-title-link {
+            text-decoration: none;
+            display: block;
+            padding: 6px 8px;
+        }
+
+        .product-card-title {
+            font-size: 10px;
+            font-weight: 400;
+            color: #666;
+            line-height: 1.3;
+            text-transform: lowercase;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 
 </head>
@@ -705,3 +791,6 @@
 </body>
 
 </html>
+
+
+

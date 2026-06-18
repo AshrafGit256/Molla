@@ -20,7 +20,16 @@ class ProductController extends Controller
 {
     public function list()
     {
-        $data['getRecord']= ProductModel::getRecord();
+        $query = ProductModel::select('product.*', 'users.name as created_by_name')
+                    ->join('users', 'users.id', '=', 'product.created_by')
+                    ->where('product.is_delete', '=', 0)
+                    ->orderBy('product.id', 'desc');
+        
+        if (!empty(request()->get('q'))) {
+            $query = $query->where('product.title', 'like', '%' . request()->get('q') . '%');
+        }
+        
+        $data['getRecord'] = $query->paginate(10);
         $data['header_title'] = 'Product';
         return view('admin.product.list', $data);
     }
