@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -38,17 +38,17 @@
 
     <style>
         :root {
-            --shop-ink: #171717;
-            --shop-muted: #6f6f6f;
-            --shop-line: #e9e4dc;
-            --shop-soft: #faf8f4;
+            --shop-ink: #2c5aa0;
+            --shop-muted: #666;
+            --shop-line: #e0e0ff;
+            --shop-soft: #f0f8ff;
             --shop-panel: #ffffff;
-            --shop-accent: #9a6f43;
-            --shop-accent-dark: #6f4b29;
-            --shop-success: #16845b;
-            --shop-warning: #b7791f;
-            --shop-danger: #c2413b;
-            --shop-shadow: 0 18px 45px rgba(23, 23, 23, .08);
+            --shop-accent: #ff6b9d;
+            --shop-accent-dark: #ff3d88;
+            --shop-success: #66cc66;
+            --shop-warning: #ffcc66;
+            --shop-danger: #ff6b6b;
+            --shop-shadow: 0 18px 45px rgba(44, 90, 160, .08);
         }
 
         body {
@@ -243,7 +243,7 @@
             border: 1px solid var(--shop-line);
             border-radius: 8px;
             background: #fff;
-            box-shadow: 0 14px 35px rgba(23, 23, 23, .06);
+            box-shadow: 0 14px 35px rgba(44, 90, 160, .06);
             padding: 1.25rem;
         }
 
@@ -298,7 +298,7 @@
             border: 1px solid var(--shop-line);
             border-radius: 8px;
             background: #fff;
-            box-shadow: 0 14px 35px rgba(23, 23, 23, .05);
+            box-shadow: 0 14px 35px rgba(44, 90, 160, .05);
         }
 
         .customer-card__header {

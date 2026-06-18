@@ -1,4 +1,4 @@
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+﻿<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <header class="header">
     <div class="header-top">
@@ -68,10 +68,6 @@
                     <span class="sr-only">Toggle mobile menu</span>
                     <i class="icon-bars"></i>
                 </button>
-
-
-
-
 
                 <nav class="main-nav">
                     <ul class="menu sf-arrows">
