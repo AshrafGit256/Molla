@@ -11,17 +11,21 @@
     .pin-product-grid {
         display: grid;
         grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 1.2rem;
+        grid-auto-flow: dense;
+        grid-auto-rows: 5px;
+        column-gap: 1.2rem;
+        row-gap: 4px;
         align-items: start;
     }
 
     .pin-product-focus {
         grid-column: span 4;
+        grid-row: span 64;
         display: grid;
         grid-template-columns: minmax(280px, 1.05fr) minmax(320px, .95fr);
         gap: 1.4rem;
-        min-height: 620px;
-        padding: 1.4rem;
+        min-height: 540px;
+        padding: 1.2rem;
         border: 1px solid #e8e8e8;
         border-radius: 8px;
         background: #fff;
@@ -49,15 +53,15 @@
         overflow: hidden;
         border-radius: 8px;
         background: #f4f4f4;
-        min-height: 560px;
+        min-height: 500px;
     }
 
     .pin-focus-media img {
         width: 100%;
         height: 100%;
-        min-height: 560px;
+        min-height: 500px;
         display: block;
-        object-fit: cover;
+        object-fit: contain;
     }
 
     .pin-focus-placeholder,
@@ -70,72 +74,49 @@
         background: #f1f1f1;
     }
 
-    .pin-thumb-row {
-        display: flex;
-        gap: .65rem;
-        margin-top: .8rem;
-        overflow-x: auto;
-        padding-bottom: .2rem;
-    }
-
-    .pin-thumb {
-        flex: 0 0 74px;
-        height: 80px;
-        border: 2px solid transparent;
-        border-radius: 8px;
-        overflow: hidden;
-        background: #f4f4f4;
-    }
-
-    .pin-thumb.active {
-        border-color: #a8d2ff;
-    }
-
-    .pin-thumb img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    .pin-hidden-gallery {
+        display: none;
     }
 
     .pin-focus-details {
-        padding: .5rem .3rem;
+        padding: .25rem .15rem;
     }
 
     .pin-focus-details .product-title {
-        margin-bottom: .6rem;
-        font-size: 2.6rem;
+        margin-bottom: .45rem;
+        font-size: 2.3rem;
         line-height: 1.15;
         font-weight: 500;
         color: #171717;
     }
 
     .pin-focus-details .product-price {
-        margin: .8rem 0 1rem;
+        margin: .55rem 0 .75rem;
         color: #8fc5ff;
-        font-size: 2.3rem;
+        font-size: 2.1rem;
         font-weight: 500;
     }
 
     .pin-product-summary {
         color: #646464;
-        font-size: 1.5rem;
-        line-height: 1.65;
+        font-size: 1.35rem;
+        line-height: 1.5;
     }
 
     .pin-proof-row {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: .7rem;
-        margin: 1.6rem 0 1.2rem;
+        margin: 1rem 0 .85rem;
     }
 
     .pin-proof-item {
-        min-height: 96px;
+        min-height: 82px;
         border: 1px solid #ececec;
         border-radius: 8px;
-        padding: .9rem;
+        padding: .75rem;
         color: #666;
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         line-height: 1.45;
     }
 
@@ -186,6 +167,18 @@
         border-radius: 8px;
         background: #fff;
         box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+        grid-row: span 32;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pin-product-card:nth-of-type(3n) {
+        grid-row: span 36;
+    }
+
+    .pin-product-card:nth-of-type(5n) {
+        grid-row: span 28;
     }
 
     .pin-product-card a {
@@ -196,12 +189,14 @@
         position: relative;
         display: block;
         background: #f3f3f3;
+        flex: 1 1 auto;
+        min-height: 0;
     }
 
     .pin-card-image img {
         width: 100%;
-        min-height: 220px;
-        max-height: 420px;
+        height: 100%;
+        min-height: 0;
         display: block;
         object-fit: cover;
     }
@@ -219,6 +214,7 @@
     }
 
     .pin-card-body {
+        flex: 0 0 auto;
         padding: .75rem .85rem .9rem;
     }
 
@@ -348,11 +344,9 @@
                         </div>
 
                         @if(!empty($getProduct->getImage->count()))
-                        <div id="product-zoom-gallery" class="pin-thumb-row">
+                        <div id="product-zoom-gallery" class="pin-hidden-gallery" aria-hidden="true">
                             @foreach($getProduct->getImage as $image)
-                            <a class="pin-thumb product-gallery-item {{ $loop->first ? 'active' : '' }}" href="#" data-colors="{{ implode(',', $image->colorIds()) }}" data-image="{{ $image->get_image() }}" data-zoom-image="{{ $image->get_image() }}">
-                                <img src="{{ $image->get_image() }}" alt="{{ $getProduct->title }} view {{ $loop->iteration }}">
-                            </a>
+                            <a class="product-gallery-item {{ $loop->first ? 'active' : '' }}" href="#" data-colors="{{ implode(',', $image->colorIds()) }}" data-image="{{ $image->get_image() }}" data-zoom-image="{{ $image->get_image() }}"></a>
                             @endforeach
                         </div>
                         @endif
