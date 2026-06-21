@@ -81,6 +81,7 @@ class ProductController extends Controller
 
             $data['getProduct'] = $getProductSingle;
             $data['getRelatedProduct'] = ProductModel::getRelatedProduct($getProductSingle->id, $getProductSingle->sub_category_id);
+            $data['getCategoryProducts'] = ProductModel::getCategoryCompanionProducts($getProductSingle->id, $getProductSingle->category_id);
 
             $data['getReviewProduct'] = ProductReviewModel::getReviewproduct($getProductSingle->id);
             return view('product.detail', $data);
