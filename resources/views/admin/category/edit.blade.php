@@ -57,8 +57,9 @@
                   <hr style="border: 1px dashed #ccc; margin-top: 35px;">
 
                   <div class="form-group">
-                      <label>Image<span style="color: red;">*</span></label> <!-- Add * if it's a required field -->
+                      <label>Category Hero Image<span style="color: red;">*</span></label>
                       <input type="file" name="image_name" class="form-control">
+                      <small class="form-text text-muted">This image appears on the right side of the category banner on the shop page.</small>
                       @if(!empty($getRecord->getImage()))
                           <img src="{{ $getRecord->getImage() }}" style="height: 100px; width: 100px; border-radius: 20%;">
                       @endif

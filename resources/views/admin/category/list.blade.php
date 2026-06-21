@@ -39,7 +39,7 @@
                   <thead>
                     <tr class="btn-primary">
                       <th>#</th>
-                      <th>Image</th>
+                      <th>Hero Image</th>
                       <th>Name</th>
                       <th>Slug</th>
                       <th>Meta Title</th>

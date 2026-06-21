@@ -4,27 +4,11 @@
     <div class="header-top">
         <div class="container-fluid">
             <div class="header-left">
+                <span class="header-promo"><i class="fas fa-truck"></i> Free Delivery <small>on orders over UGX 100,000</small></span>
+            </div>
 
-                <div class="header-dropdown">
-                <a href="#"><i class="fas fa-language" style="font-size: 30px;"></i></a>
-                    <div class="header-menu">
-                        <ul>
-                            <li><a href="?lang=en">English</a></li>
-                            <li><a href="?lang=ar">Arabic</a></li>
-                            <li><a href="?lang=zh">Chinese</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="header-dropdown">
-                <a href="#"><i class="fas fa-yen-sign" style="font-size: 20px;"></i></a>
-                    <div class="header-menu">
-                        <ul>
-                            <li><a href="#">Usd</a></li>
-                        </ul>
-                    </div>
-                </div>
-
+            <div class="header-center">
+                <span class="header-promo header-promo--center"><i class="far fa-heart"></i> Loved by 10,000+ parents</span>
             </div>
 
             <div class="header-right">
@@ -68,6 +52,20 @@
                     <span class="sr-only">Toggle mobile menu</span>
                     <i class="icon-bars"></i>
                 </button>
+
+                <a href="{{ url('') }}" class="customer-logo" aria-label="{{ !empty($getSystemSettingApp->website_name) ? $getSystemSettingApp->website_name : 'Shop home' }}">
+                    @if(!empty($getSystemSettingApp) && !empty($getSystemSettingApp->getLogo()))
+                        <img src="{{ $getSystemSettingApp->getLogo() }}" alt="{{ !empty($getSystemSettingApp->website_name) ? $getSystemSettingApp->website_name : 'Shop logo' }}">
+                    @else
+                        <img src="{{ asset('assets/images/logo.png') }}" alt="Shop logo">
+                    @endif
+                </a>
+
+                <form action="{{ url('search') }}" method="get" class="customer-search-form">
+                    <label for="customer-search" class="sr-only">Search</label>
+                    <input type="search" name="q" id="customer-search" placeholder="Search for adorable outfits..." value="{{ !empty(Request::get('q')) ? Request::get('q') : '' }}" required>
+                    <button type="submit" aria-label="Search"><i class="icon-search"></i></button>
+                </form>
 
                 <nav class="main-nav">
                     <ul class="menu sf-arrows">

@@ -5,19 +5,53 @@
 @section('content')
 
 <main class="main">
-        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+            @php
+                $pageTitle = !empty($getSubCategory)
+                    ? $getSubCategory->name
+                    : (!empty($getCategory) ? $getCategory->name : 'Search: ' . Request::get('q'));
+                $heroCategory = !empty($getCategory) ? $getCategory : null;
+                $heroImage = !empty($heroCategory) ? $heroCategory->getImage() : '';
+                $heroButton = !empty($heroCategory) && !empty($heroCategory->button_name) ? $heroCategory->button_name : 'Shop Collection';
+                $titleMain = $pageTitle;
+                $titleAccent = '';
+
+                if (preg_match('/^(.*?)\s*(\(.*\))$/', $pageTitle, $matches)) {
+                    $titleMain = trim($matches[1]);
+                    $titleAccent = trim($matches[2]);
+                }
+            @endphp
+
+        	<section class="category-hero-section">
         		<div class="container-fluid">
-                    @if(!empty($getSubCategory))
-                        <h1 class="page-title">{{ $getSubCategory->name }}</h1>
-                    @elseif(!empty($getCategory))
-                        <h1 class="page-title">{{ $getCategory->name }}</h1>
-					@else
-						<h1 class="page-title">Search: {{ Request::get('q') }}</h1>
+                    <div class="category-hero">
+                    <div class="category-hero__content">
+                        <span class="category-hero__eyebrow"><i class="fas fa-heart"></i> Fresh picks for little ones</span>
+                        <h1 class="category-hero__title">
+                            {{ $titleMain }}
+                            @if(!empty($titleAccent))
+                                <span>{{ $titleAccent }}</span>
+                            @endif
+                        </h1>
+                        <p class="category-hero__text">Soft everyday essentials for comfort and gifting.</p>
+                        @if(!empty($heroCategory))
+                            <div class="category-hero__actions">
+                                <a href="#getProductAjax" class="btn category-hero__button">
+                                    <span>{{ $heroButton }}</span>
+                                    <i class="icon-long-arrow-right"></i>
+                                </a>
+                                <span class="category-hero__trust"><i class="far fa-check-square"></i> Trusted by parents</span>
+                            </div>
+                        @endif
+                    </div>
+                    @if(!empty($heroImage))
+                        <div class="category-hero__image">
+                            <img src="{{ $heroImage }}" alt="{{ $pageTitle }}">
+                        </div>
                     @endif
-        			
+                    </div>
         		</div>
-        	</div>
-            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+        	</section>
+            <nav aria-label="breadcrumb" class="breadcrumb-nav category-breadcrumb">
                 <div class="container-fluid">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ url('') }}">Home</a></li>
@@ -33,14 +67,14 @@
                 </div>
             </nav>
 
-            <div class="page-content">
+            <div class="page-content category-page-content">
                 <div class="container-fluid">
                 	<div class="row">
                 		<div class="col-12">
-                			<div class="toolbox">
+                			<div class="toolbox category-toolbox">
                 				<div class="toolbox-left">
                 					<div class="toolbox-info">
-                						Showing <span>{{ $getProduct->total() }} of {{ $getProduct->perPage() }}</span> Products
+                						Showing <span>{{ $getProduct->total() }}</span> products
                 					</div>
                 				</div>
 
@@ -81,6 +115,3 @@
 </main><!-- End .main -->
 
 @endsection
-
-
-
