@@ -196,13 +196,14 @@
         }
 
         .category-hero-section {
-            padding: 2rem 0 1.6rem;
+            padding: 1.35rem 0 1.2rem;
             background: #fff;
         }
 
         .category-hero {
             position: relative;
-            min-height: 232px;
+            height: clamp(260px, 31vw, 350px);
+            min-height: 0;
             display: flex;
             align-items: stretch;
             justify-content: space-between;
@@ -224,10 +225,10 @@
         }
 
         .category-hero::before {
-            width: 330px;
-            height: 330px;
+            width: 260px;
+            height: 260px;
             right: 11%;
-            top: -72px;
+            top: -62px;
             border: 2px dashed rgba(255, 107, 157, .22);
         }
 
@@ -243,9 +244,9 @@
         .category-hero__content {
             position: relative;
             z-index: 2;
-            width: 47%;
+            width: 48%;
             min-width: 0;
-            padding: 3rem 2rem 2.6rem 4.8rem;
+            padding: 2.25rem 2rem 2.15rem 4rem;
         }
 
         .category-hero__eyebrow {
@@ -270,9 +271,9 @@
         }
 
         .category-hero__title {
-            margin: 1.4rem 0 .9rem;
+            margin: 1.05rem 0 .65rem;
             color: #1f2d3d;
-            font-size: 4.3rem;
+            font-size: 3.6rem;
             font-weight: 800;
             line-height: 1.05;
             letter-spacing: 0;
@@ -288,8 +289,8 @@
             max-width: 340px;
             margin: 0;
             color: #56657a;
-            font-size: 1.55rem;
-            line-height: 1.75;
+            font-size: 1.42rem;
+            line-height: 1.55;
             font-weight: 400;
             overflow-wrap: break-word;
         }
@@ -298,7 +299,7 @@
             display: flex;
             align-items: center;
             gap: 2.2rem;
-            margin-top: 1.8rem;
+            margin-top: 1.45rem;
         }
 
         .category-hero__button {
@@ -328,16 +329,20 @@
         .category-hero__image {
             position: relative;
             z-index: 1;
-            flex: 1 1 53%;
+            flex: 0 0 52%;
             min-width: 0;
+            padding: .85rem;
         }
 
         .category-hero__image img {
             width: 100%;
             height: 100%;
-            min-height: 232px;
+            min-height: 0;
             object-fit: cover;
             object-position: center;
+            border: 1px solid rgba(44, 90, 160, .12);
+            border-radius: 8px;
+            box-shadow: 0 10px 28px rgba(31, 45, 61, .12);
         }
 
         .category-breadcrumb {
@@ -363,7 +368,7 @@
         }
 
         .category-page-content {
-            padding-top: 2.4rem;
+            padding-top: .9rem;
             background: linear-gradient(180deg, #fbfdff, #fff 140px);
         }
 
@@ -909,16 +914,17 @@
             }
 
             .category-hero {
-                min-height: 220px;
+                height: 280px;
+                min-height: 0;
             }
 
             .category-hero__title {
-                font-size: 4rem;
+                font-size: 3.2rem;
             }
 
             .category-hero__content {
                 width: 56%;
-                padding-left: 2.5rem;
+                padding: 2rem 1.6rem 1.8rem 2.5rem;
             }
 
         }
@@ -940,7 +946,8 @@
 
             .category-hero {
                 display: block;
-                min-height: auto;
+                height: auto;
+                min-height: 0;
             }
 
             .category-hero__title {
@@ -953,7 +960,7 @@
 
             .category-hero__content {
                 width: 100%;
-                padding: 2.3rem 1.8rem 2rem;
+                padding: 2rem 1.8rem 1.6rem;
             }
 
             .category-hero__actions {
@@ -962,11 +969,12 @@
             }
 
             .category-hero__image {
-                height: 190px;
+                height: 180px;
+                padding: 0 .9rem .9rem;
             }
 
             .category-hero__image img {
-                min-height: 190px;
+                min-height: 0;
             }
 
             .category-toolbox {
