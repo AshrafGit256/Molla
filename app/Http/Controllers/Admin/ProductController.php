@@ -15,6 +15,8 @@ use App\Models\ProductSizeModel;
 use App\Models\ProductImageModel;
 use App\Models\ProductImageColorModel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -147,34 +149,73 @@ class ProductController extends Controller
 
             if(!empty($request->file('image')))
             {
+                $destinationPath = public_path('upload/product');
+
+                try {
+                    File::ensureDirectoryExists($destinationPath, 0755, true);
+                } catch (\Throwable $e) {
+                    Log::error('Product image directory could not be created.', [
+                        'path' => $destinationPath,
+                        'error' => $e->getMessage(),
+                    ]);
+
+                    return redirect()->back()->with('error', 'Product image folder is not writable on the server.');
+                }
+
+                if (!is_writable($destinationPath)) {
+                    Log::error('Product image directory is not writable.', ['path' => $destinationPath]);
+
+                    return redirect()->back()->with('error', 'Product image folder is not writable on the server.');
+                }
+
                 foreach($request->file('image') as $key => $value)
                 {
-                    if($value->isValid())
+                    if(!$value->isValid())
                     {
-                        $ext = $value->getClientOriginalExtension();
-                        $randomStr = $product->id.Str::random(20);
-                        $filename = strtolower($randomStr).'.'.$ext;
-                        $value->move(public_path('upload/product/'), $filename);
+                        return redirect()->back()->with('error', 'One of the selected product images could not be uploaded.');
+                    }
 
-                        $imageupload = new ProductImageModel;
-                        $imageupload -> image_name = $filename;
-                        $imageupload -> image_extension = $ext;
-                        $imageupload -> product_id = $product_id;
-                        $imageupload -> save();
+                    $ext = strtolower($value->getClientOriginalExtension());
+                    $randomStr = $product->id.Str::random(20);
+                    $filename = strtolower($randomStr).'.'.$ext;
+                    $fullPath = $destinationPath.DIRECTORY_SEPARATOR.$filename;
 
-                        if(!empty($request->image_colors[$key]))
+                    try {
+                        $value->move($destinationPath, $filename);
+                    } catch (\Throwable $e) {
+                        Log::error('Product image upload failed.', [
+                            'path' => $destinationPath,
+                            'filename' => $filename,
+                            'error' => $e->getMessage(),
+                        ]);
+
+                        return redirect()->back()->with('error', 'Product image upload failed. Please check server folder permissions.');
+                    }
+
+                    if (!file_exists($fullPath)) {
+                        Log::error('Product image was not found after upload.', ['path' => $fullPath]);
+
+                        return redirect()->back()->with('error', 'Product image upload failed. The file was not saved on the server.');
+                    }
+
+                    $imageupload = new ProductImageModel;
+                    $imageupload->image_name = $filename;
+                    $imageupload->image_extension = $ext;
+                    $imageupload->product_id = $product_id;
+                    $imageupload->save();
+
+                    if(!empty($request->image_colors[$key]))
+                    {
+                        foreach($request->image_colors[$key] as $color_id)
                         {
-                            foreach($request->image_colors[$key] as $color_id)
-                            {
-                                if(empty($color_id)) {
-                                    continue;
-                                }
-
-                                $imageColor = new ProductImageColorModel;
-                                $imageColor->product_image_id = $imageupload->id;
-                                $imageColor->color_id = $color_id;
-                                $imageColor->save();
+                            if(empty($color_id)) {
+                                continue;
                             }
+
+                            $imageColor = new ProductImageColorModel;
+                            $imageColor->product_image_id = $imageupload->id;
+                            $imageColor->color_id = $color_id;
+                            $imageColor->save();
                         }
                     }
                 }
@@ -243,9 +284,9 @@ class ProductController extends Controller
     public function image_delete($id)
     {
         $image =  ProductImageModel::getSingle($id);
-        if(!empty($image->get_image()))
+        if(!empty($image->image_name) && file_exists(public_path('upload/product/' .$image->image_name)))
         {
-            unlink('upload/product/' .$image->image_name);
+            unlink(public_path('upload/product/' .$image->image_name));
         }
         $image->delete();
 

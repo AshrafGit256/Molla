@@ -35,9 +35,11 @@ class BottomSliderModel extends Model
 
     public function getImage()
     {
-        if(!empty($this->image_name) && file_exists('upload/bottom_slider/' .$this->image_name))
+        if(!empty($this->image_name) && file_exists(public_path('upload/bottom_slider/' .$this->image_name)))
         {
-            return url('upload/bottom_slider/' .$this->image_name);
+            $path = public_path('upload/bottom_slider/' .$this->image_name);
+            $timestamp = filemtime($path);
+            return url('upload/bottom_slider/' .$this->image_name . '?v=' . $timestamp);
         }
         else
         {

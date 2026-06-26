@@ -18,9 +18,11 @@ class SystemSettingModel extends Model
 
     public function getLogo()
     {
-        if(!empty($this->logo) && file_exists('upload/setting/' .$this->logo))
+        if(!empty($this->logo) && file_exists(public_path('upload/setting/' .$this->logo)))
         {
-            return url('upload/setting/' .$this->logo);
+            $path = public_path('upload/setting/' .$this->logo);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->logo . '?v=' . $timestamp);
         }
         else
         {
@@ -30,9 +32,11 @@ class SystemSettingModel extends Model
 
     public function getFavicon()
     {
-        if(!empty($this->favicon) && file_exists('upload/setting/' .$this->favicon))
+        if(!empty($this->favicon) && file_exists(public_path('upload/setting/' .$this->favicon)))
         {
-            return url('upload/setting/' .$this->favicon);
+            $path = public_path('upload/setting/' .$this->favicon);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->favicon . '?v=' . $timestamp);
         }
         else
         {
@@ -42,9 +46,11 @@ class SystemSettingModel extends Model
 
     public function getFooterPaymentIcon()
     {
-        if(!empty($this->footer_payment_icon) && file_exists('upload/setting/' .$this->footer_payment_icon))
+        if(!empty($this->footer_payment_icon) && file_exists(public_path('upload/setting/' .$this->footer_payment_icon)))
         {
-            return url('upload/setting/' .$this->footer_payment_icon);
+            $path = public_path('upload/setting/' .$this->footer_payment_icon);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->footer_payment_icon . '?v=' . $timestamp);
         }
         else
         {

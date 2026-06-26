@@ -20,7 +20,9 @@ class ProductImageModel extends Model
     {
         if(!empty($this->image_name) && file_exists(public_path('upload/product/' .$this->image_name)))
         {
-            return url('upload/product/' .$this->image_name);
+            $path = public_path('upload/product/' .$this->image_name);
+            $timestamp = filemtime($path);
+            return url('upload/product/' .$this->image_name . '?v=' . $timestamp);
         }
         else
         {

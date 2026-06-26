@@ -13,8 +13,10 @@ class PaymentIconModel extends Model
 
     public function getImage()
     {
-        if (!empty($this->image_name) && file_exists('upload/payment_icons/' . $this->image_name)) {
-            return url('upload/payment_icons/' . $this->image_name);
+        if (!empty($this->image_name) && file_exists(public_path('upload/payment_icons/' . $this->image_name))) {
+            $path = public_path('upload/payment_icons/' . $this->image_name);
+            $timestamp = filemtime($path);
+            return url('upload/payment_icons/' . $this->image_name . '?v=' . $timestamp);
         }
 
         return '';

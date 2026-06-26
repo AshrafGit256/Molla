@@ -84,9 +84,11 @@ class CategoryModel extends Model
 
     public function getImage()
     {
-        if(!empty($this->image_name) && file_exists('upload/category/' .$this->image_name))
+        if(!empty($this->image_name) && file_exists(public_path('upload/category/' .$this->image_name)))
         {
-            return url('upload/category/' .$this->image_name);
+            $path = public_path('upload/category/' .$this->image_name);
+            $timestamp = filemtime($path);
+            return url('upload/category/' .$this->image_name . '?v=' . $timestamp);
         }
         else
         {

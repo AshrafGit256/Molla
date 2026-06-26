@@ -35,9 +35,11 @@ class TopSliderModel extends Model
 
     public function getImage()
     {
-        if(!empty($this->image_name) && file_exists('upload/top_slider/' .$this->image_name))
+        if(!empty($this->image_name) && file_exists(public_path('upload/top_slider/' .$this->image_name)))
         {
-            return url('upload/top_slider/' .$this->image_name);
+            $path = public_path('upload/top_slider/' .$this->image_name);
+            $timestamp = filemtime($path);
+            return url('upload/top_slider/' .$this->image_name . '?v=' . $timestamp);
         }
         else
         {

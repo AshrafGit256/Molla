@@ -145,7 +145,9 @@ class User extends Authenticatable
     {
         if(!empty($this->image_name) && file_exists(public_path('upload/user/' .$this->image_name)))
         {
-            return url('upload/user/' .$this->image_name);
+            $path = public_path('upload/user/' .$this->image_name);
+            $timestamp = filemtime($path);
+            return url('upload/user/' .$this->image_name . '?v=' . $timestamp);
         }
         else
         {

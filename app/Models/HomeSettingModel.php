@@ -18,9 +18,11 @@ class HomeSettingModel extends Model
 
     public function getPaymentImage()
     {
-        if(!empty($this->payment_delivery_image) && file_exists('upload/setting/' .$this->payment_delivery_image))
+        if(!empty($this->payment_delivery_image) && file_exists(public_path('upload/setting/' .$this->payment_delivery_image)))
         {
-            return url('upload/setting/' .$this->payment_delivery_image);
+            $path = public_path('upload/setting/' .$this->payment_delivery_image);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->payment_delivery_image . '?v=' . $timestamp);
         }
         else
         {
@@ -30,9 +32,11 @@ class HomeSettingModel extends Model
 
     public function getRefundImage()
     {
-        if(!empty($this->refund_image) && file_exists('upload/setting/' .$this->refund_image))
+        if(!empty($this->refund_image) && file_exists(public_path('upload/setting/' .$this->refund_image)))
         {
-            return url('upload/setting/' .$this->refund_image);
+            $path = public_path('upload/setting/' .$this->refund_image);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->refund_image . '?v=' . $timestamp);
         }
         else
         {
@@ -42,9 +46,11 @@ class HomeSettingModel extends Model
 
     public function getSupportImage()
     {
-        if(!empty($this->support_image) && file_exists('upload/setting/' .$this->support_image))
+        if(!empty($this->support_image) && file_exists(public_path('upload/setting/' .$this->support_image)))
         {
-            return url('upload/setting/' .$this->support_image);
+            $path = public_path('upload/setting/' .$this->support_image);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->support_image . '?v=' . $timestamp);
         }
         else
         {
@@ -54,9 +60,11 @@ class HomeSettingModel extends Model
 
     public function getSignupImage()
     {
-        if(!empty($this->signup_image) && file_exists('upload/setting/' .$this->signup_image))
+        if(!empty($this->signup_image) && file_exists(public_path('upload/setting/' .$this->signup_image)))
         {
-            return url('upload/setting/' .$this->signup_image);
+            $path = public_path('upload/setting/' .$this->signup_image);
+            $timestamp = filemtime($path);
+            return url('upload/setting/' .$this->signup_image . '?v=' . $timestamp);
         }
         else
         {

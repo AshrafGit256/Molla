@@ -104,7 +104,7 @@ class AuthController extends Controller
 
                 try {
                     Log::info('Attempting to send verification email to: ' . $save->email);
-                    Mail::to($save->email)->send(new RegisterMail($save));
+                    $this->sendVerificationEmail($save);
                     Log::info('Verification email sent successfully to: ' . $save->email);
                 } catch (\Exception $e) {
                     Log::error('Failed to send verification email to ' . $save->email . ': ' . $e->getMessage());
@@ -136,7 +136,7 @@ class AuthController extends Controller
 
             try {
                 Log::info('Attempting to send registration email to: ' . $save->email);
-                Mail::to($save->email)->send(new RegisterMail($save));
+                $this->sendVerificationEmail($save);
                 Log::info('Registration email sent successfully to: ' . $save->email);
             } catch (\Exception $e) {
                 Log::error('Failed to send registration email to ' . $save->email . ': ' . $e->getMessage());
@@ -247,6 +247,72 @@ class AuthController extends Controller
     public function lockscreen()
     {
         return view('auth.lockscreen', ['user' => Auth::user()]);
+    }
+
+    private function sendVerificationEmail(User $user): void
+    {
+        $setting = \App\Models\SystemSettingModel::getSingle();
+        $websiteName = $setting->website_name ?? config('app.name', 'HenzNoval');
+        $supportEmail = $setting->email_one ?? config('mail.from.address');
+        $verificationUrl = url('activate/'.base64_encode($user->id));
+        $subject = $websiteName.' - Verify your email';
+        $html = $this->verificationEmailHtml($user, $websiteName, $supportEmail, $verificationUrl);
+
+        Mail::html($html, function ($message) use ($user, $subject) {
+            $message->to($user->email, $user->name)->subject($subject);
+        });
+    }
+
+    private function verificationEmailHtml(User $user, string $websiteName, string $supportEmail, string $verificationUrl): string
+    {
+        $safeName = e($user->name);
+        $safeWebsiteName = e($websiteName);
+        $safeSupportEmail = e($supportEmail);
+        $safeVerificationUrl = e($verificationUrl);
+        $year = date('Y');
+
+        return <<<HTML
+<!doctype html>
+<html>
+<body style="margin:0;padding:0;background:#f3f6fb;font-family:Arial,Helvetica,sans-serif;color:#172033;">
+  <div style="max-width:640px;margin:0 auto;padding:28px 16px;">
+    <div style="padding:10px 0 24px;letter-spacing:6px;font-size:12px;color:#7b8aa0;text-transform:uppercase;">
+      <strong style="background:#ffe59a;color:#172033;padding:3px 7px;letter-spacing:4px;">{$safeWebsiteName}</strong>
+      <span style="margin-left:12px;">Account Verification</span>
+    </div>
+    <div style="background:linear-gradient(135deg,#143b78,#3b82c4);color:#fff;padding:34px 38px;border-radius:18px 18px 0 0;">
+      <h1 style="margin:0 0 10px;font-size:30px;line-height:1.2;color:#fff;">Verify your email</h1>
+      <p style="margin:0;color:#d8e7fb;font-size:16px;">Complete your {$safeWebsiteName} registration.</p>
+    </div>
+    <div style="background:#fff;border:1px solid #e2e8f0;border-top:0;padding:34px 38px;border-radius:0 0 18px 18px;">
+      <p style="font-size:18px;margin:0 0 16px;">Hi <strong>{$safeName}</strong>,</p>
+      <p style="font-size:16px;line-height:1.7;color:#5f6f84;margin:0 0 28px;">
+        Thanks for creating your {$safeWebsiteName} account. Please confirm that this email belongs to you so we can activate your account and keep your shopping experience secure.
+      </p>
+      <div style="text-align:center;margin:30px 0;">
+        <a href="{$safeVerificationUrl}" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:14px 26px;border-radius:8px;font-weight:700;font-size:16px;">Verify Email Address</a>
+      </div>
+      <p style="font-size:14px;line-height:1.7;color:#8a97a8;margin:0 0 22px;">
+        If the button does not open, copy and paste this link into your browser:<br>
+        <a href="{$safeVerificationUrl}" style="color:#2563eb;">{$safeVerificationUrl}</a>
+      </p>
+      <div style="padding:18px;border:1px dashed #d8e0eb;border-radius:12px;background:#f8fafc;">
+        <p style="margin:0;font-size:14px;line-height:1.7;color:#718096;">
+          If you did not create this account, you can safely ignore this email. No account will be verified unless this link is opened.
+        </p>
+      </div>
+    </div>
+    <div style="margin-top:22px;padding:20px 24px;background:#edf2f7;color:#8a97a8;font-size:13px;border-radius:10px;">
+      <div>
+        <strong style="background:#ffe59a;color:#172033;padding:3px 7px;letter-spacing:3px;">{$safeWebsiteName}</strong>
+        <a href="mailto:{$safeSupportEmail}" style="float:right;color:#2563eb;">{$safeSupportEmail}</a>
+      </div>
+      <p style="clear:both;margin:20px 0 0;text-align:center;">&copy; {$year} {$safeWebsiteName}. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+HTML;
     }
 
     public function unlock(Request $request)

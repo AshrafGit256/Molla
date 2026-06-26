@@ -24,14 +24,14 @@ class ProductSeeder extends Seeder
         $products = [];
         $skuCounter = 100001;
 
-        $patterns = ['Dino', 'Floral', 'Striped', 'Animal', 'Polka Dot', 'Solid', 'Star', 'Heart', 'Rainbow', 'Unicorn'];
-        $colors = ['Sky Blue', 'Pink Rose', 'Cloud White', 'Mint Green', 'Sunshine Yellow', 'Lavender', 'Peach', 'Navy', 'Red', 'Purple'];
-        $materials = ['Cotton', 'Fleece', 'Denim', 'Flannel', 'Jersey'];
-        $types = ['T-Shirt', 'Dress', 'Pants', 'Shorts', 'Romper', 'Jumpsuit', 'Top', 'Hoodie', 'Leggings', 'Sleepwear'];
+        $patterns = ['Dino', 'Floral', 'Striped', 'Animal', 'Polka Dot', 'Solid', 'Star', 'Heart', 'Rainbow', 'Unicorn', 'Checkered', 'Camo', 'Gradient', 'Abstract', 'Minimal'];
+        $colors = ['Sky Blue', 'Pink Rose', 'Cloud White', 'Mint Green', 'Sunshine Yellow', 'Lavender', 'Peach', 'Navy', 'Red', 'Purple', 'Coral', 'Teal', 'Mustard', 'Sage', 'Blush', 'Ocean', 'Berry', 'Ivory', 'Charcoal', 'Gold'];
+        $materials = ['Cotton', 'Fleece', 'Denim', 'Flannel', 'Jersey', 'Bamboo', 'Linen', 'Velour', 'Tencel', 'Organic Cotton'];
+        $types = ['T-Shirt', 'Dress', 'Pants', 'Shorts', 'Romper', 'Jumpsuit', 'Top', 'Hoodie', 'Leggings', 'Sleepwear', 'Cardigan', 'Sweater', 'Overalls', 'Skirt', 'Jacket'];
 
 foreach ($categories as $category) {
             $subCategories = SubCategoryModel::where('category_id', $category->id)->get();
-            $productsPerCategory = 25;
+            $productsPerCategory = 375;
 
             for ($i = 0; $i < $productsPerCategory; $i++) {
                 $subCategory = $subCategories->random();
@@ -58,7 +58,8 @@ foreach ($categories as $category) {
                     'shipping_returns' => 'Free shipping. Easy returns within 30 days.',
                     'stock' => rand(15, 80),
                 ];
-}
+            }
+        }
         }
 
         foreach ($products as $prod) {

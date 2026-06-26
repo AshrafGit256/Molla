@@ -45,6 +45,48 @@ class CategorySeeder extends Seeder
                 'is_menu' => 1,
                 'button_name' => 'Shop Kids',
             ],
+            [
+                'name' => 'Big Kids (8-12 years)',
+                'slug' => Str::slug('Big Kids (8-12 years)'),
+                'is_home' => 1,
+                'is_menu' => 1,
+                'button_name' => 'Shop Big Kids',
+            ],
+            [
+                'name' => 'Teens (13-16 years)',
+                'slug' => Str::slug('Teens (13-16 years)'),
+                'is_home' => 1,
+                'is_menu' => 1,
+                'button_name' => 'Shop Teens',
+            ],
+            [
+                'name' => 'Women',
+                'slug' => Str::slug('Women'),
+                'is_home' => 1,
+                'is_menu' => 1,
+                'button_name' => 'Shop Women',
+            ],
+            [
+                'name' => 'Men',
+                'slug' => Str::slug('Men'),
+                'is_home' => 1,
+                'is_menu' => 1,
+                'button_name' => 'Shop Men',
+            ],
+            [
+                'name' => 'Home & Living',
+                'slug' => Str::slug('Home & Living'),
+                'is_home' => 1,
+                'is_menu' => 1,
+                'button_name' => 'Shop Home',
+            ],
+            [
+                'name' => 'Electronics',
+                'slug' => Str::slug('Electronics'),
+                'is_home' => 1,
+                'is_menu' => 1,
+                'button_name' => 'Shop Electronics',
+            ],
         ];
 
         foreach ($categories as $category) {
